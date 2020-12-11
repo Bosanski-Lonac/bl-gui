@@ -22,7 +22,7 @@ public class Main {
 	public static void main(String[] args) {
 		RestTemplate restTemplate = new RestTemplate();
 		//testCorrectRegisterA(restTemplate);
-		//testCorrectRegisterB(restTemplate);
+		testCorrectRegisterB(restTemplate);
 		//String token = testLogin(restTemplate, "agasic218rn@raf.rs", "testPassword");
 		String token = testLogin(restTemplate, "sbudimac618rn@raf.rs", "testPassword1");
 		if(token != null) {

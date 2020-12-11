@@ -24,6 +24,12 @@
   		<artifactId>core</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
  	</dependency>
+ 	<!-- JavaFX -->
+ 	<dependency>
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-controls</artifactId>
+    	<version>16-ea+5</version>
+</dependency>
   </dependencies>
 
   <build>
