@@ -22,8 +22,8 @@ public class Main {
 		if(token != null) {
 			TokenInterceptor tokenInterceptor = new TokenInterceptor(token);
 			restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
-			//testIncorrectDelete(restTemplate);
-			testCorrectDelete(restTemplate);
+			testIncorrectDelete(restTemplate);
+			//testCorrectDelete(restTemplate);
 		}
 	}
 	public static String testLogin(RestTemplate restTemplate) {
@@ -51,7 +51,7 @@ public class Main {
                 .exchange(KORISNIK_URL, HttpMethod.POST, requestA, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.CREATED)) {
-        	System.out.println("Successfully registered B");
+        	System.out.println("Successfully registered A");
         	System.out.println(response.getBody().getBrojPasosa());
         }
     }
