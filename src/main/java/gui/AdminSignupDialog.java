@@ -64,4 +64,12 @@ public class AdminSignupDialog extends Dialog<Boolean> {
 		getDialogPane().setPrefHeight(600);
 		setTitle("Admin sign up");
 	}
+	
+	public String getUsername() {
+		return usernameTf.getText();
+	}
+	
+	public String getPassword() {
+		return passwordTf.getText();
+	}
 }

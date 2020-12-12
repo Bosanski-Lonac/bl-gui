@@ -1,5 +1,6 @@
 package gui;
 
+import controller.DoKorisnickiSignup;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -64,6 +65,7 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		pozadina.setCenter(forma);
 		
 		ok=new Button("Ok");
+		ok.setOnAction(new DoKorisnickiSignup(this));
 		cancel=new Button("Cancel");
 		cancel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
@@ -81,5 +83,25 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		getDialogPane().setPrefWidth(400);
 		getDialogPane().setPrefHeight(600);
 		setTitle("Korisnicki sign up");
+	}
+	
+	public String getEmail() {
+		return emailTf.getText();
+	}
+	
+	public String getPassword() {
+		return passwordTf.getText();
+	}
+	
+	public String getBrojPasosa() {
+		return brojPasosaTf.getText();
+	}
+	
+	public String getIme() {
+		return imeTf.getText();
+	}
+	
+	public String getPrezime() {
+		return prezimeTf.getText();
 	}
 }
