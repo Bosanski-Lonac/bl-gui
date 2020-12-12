@@ -30,12 +30,6 @@
     	<artifactId>javafx-controls</artifactId>
     	<version>16-ea+5</version>
 	</dependency>
-	<!-- mail -->
-	<dependency>
-    	<groupId>javax.mail</groupId>
-    	<artifactId>javax.mail-api</artifactId>
-    	<version>1.6.2</version>
-    </dependency>
   </dependencies>
 
   <build>
