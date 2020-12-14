@@ -12,6 +12,7 @@ import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
 import dto.TokenResponseDto;
+import model.TokenInterceptor;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class Main {
@@ -40,15 +41,7 @@ public class Main {
 			testCCDisplay(restTemplate);
 		}
 	}
-	public static Long testGetLoginId(RestTemplate restTemplate) {
-		ResponseEntity<Long> response = restTemplate
-                .exchange(URL + KORISNIK_URL, HttpMethod.GET, null, Long.class);
-		if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	System.out.println("Successfully retrieved user ID");
-        	return response.getBody();
-        }
-		return null;
-	}
+
 	public static String testLogin(RestTemplate restTemplate, String username, String password) {
 		//given
 		TokenRequestDto tokenRequest = new TokenRequestDto();

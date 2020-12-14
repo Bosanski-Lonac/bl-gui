@@ -1,3 +1,4 @@
+package model;
 import java.io.IOException;
 
 import org.springframework.http.HttpHeaders;
