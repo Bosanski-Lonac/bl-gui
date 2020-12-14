@@ -18,23 +18,24 @@ public class Main {
 	private static final String URL = "http://localhost:36250/api";
 	private static final String KORISNIK_URL = "/korisnik";
 	private static final String CC_URL = "/cc";
+	
+	private static Long id = null;
 
 	public static void main(String[] args) {
 		RestTemplate restTemplate = new RestTemplate();
 		//testCorrectRegisterA(restTemplate);
-		testCorrectRegisterB(restTemplate);
-		//String token = testLogin(restTemplate, "agasic218rn@raf.rs", "testPassword");
-		String token = testLogin(restTemplate, "sbudimac618rn@raf.rs", "testPassword1");
+		//testCorrectRegisterB(restTemplate);
+		String token = testLogin(restTemplate, "agasic218rn@raf.rs", "testPassword");
+		//String token = testLogin(restTemplate, "sbudimac618rn@raf.rs", "testPassword1");
 		if(token != null) {
 			TokenInterceptor tokenInterceptor = new TokenInterceptor(token);
 			restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
-			//id = testGetLoginId(restTemplate);
 			
-			//testCCAddA(restTemplate);
-			testCCAddB(restTemplate);
+			testCCAddA(restTemplate);
+			//testCCAddB(restTemplate);
 			
 			//testIncorrectDelete(restTemplate, 2L);
-			//testCorrectDelete(restTemplate, 1L);
+			//testCorrectDelete(restTemplate);
 			
 			testCCDisplay(restTemplate);
 		}
@@ -59,13 +60,14 @@ public class Main {
                 .exchange(URL + KORISNIK_URL + "/login", HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
+        	id = response.getBody().getId();
         	return response.getBody().getToken();
         }
         return null;
 	}
 	public static void testCorrectRegisterA(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikACreateDto = createTestKorisnikCUDto("agasic218rn@raf.rs",
+		KorisnikCUDto korisnikACreateDto = new KorisnikCUDto("agasic218rn@raf.rs",
 				"testPassword", "Andrej", "Gasic", "bgrs1326z");
 		HttpEntity<KorisnikCUDto> requestA = new HttpEntity<>(korisnikACreateDto);
         //when
@@ -79,7 +81,7 @@ public class Main {
     }
 	public static void testCorrectRegisterB(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikBCreateDto = createTestKorisnikCUDto("sbudimac618rn@raf.rs",
+		KorisnikCUDto korisnikBCreateDto = new KorisnikCUDto("sbudimac618rn@raf.rs",
 				"testPassword1", "Stefan", "Budimac", "bgrs1264z");
 		HttpEntity<KorisnikCUDto> requestB = new HttpEntity<>(korisnikBCreateDto);
         //when
@@ -93,7 +95,7 @@ public class Main {
     }
 	public static void testIncorrectRegister(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikBCreateDto = createTestKorisnikCUDto("gupsi",
+		KorisnikCUDto korisnikBCreateDto = new KorisnikCUDto("gupsi",
 				"o", "Luka", "Kovacevic", "o");
 		HttpEntity<KorisnikCUDto> requestB = new HttpEntity<>(korisnikBCreateDto);
         //when
@@ -105,7 +107,7 @@ public class Main {
         	System.out.println(response.getBody().getBrojPasosa());
         }
     }
-	public static void testCorrectDelete(RestTemplate restTemplate, Long id) {
+	public static void testCorrectDelete(RestTemplate restTemplate) {
 		ResponseEntity<Void> response = restTemplate
                 .exchange(URL + KORISNIK_URL + "/" + id.toString(), HttpMethod.DELETE, null, Void.class);
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
@@ -121,12 +123,12 @@ public class Main {
 	}
 	public static void testCCAddA(RestTemplate restTemplate) {
 		//given
-		KreditnaKarticaCUDto kreditnaKarticaCreateDto = createTestKreditnaKarticaCUDto(54102561655549576L,
+		KreditnaKarticaCUDto kreditnaKarticaCreateDto = new KreditnaKarticaCUDto(54102561655549576L,
 				"Andrej", "Gasic", 123);
 		HttpEntity<KreditnaKarticaCUDto> request = new HttpEntity<>(kreditnaKarticaCreateDto);
 		//when
 		ResponseEntity<KreditnaKarticaDto> response = restTemplate
-				.exchange(URL + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
+				.exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
         	System.out.println("Succesfully added credit card A");
@@ -135,12 +137,12 @@ public class Main {
 	}
 	public static void testCCAddB(RestTemplate restTemplate) {
 		//given
-		KreditnaKarticaCUDto kreditnaKarticaCreateDto = createTestKreditnaKarticaCUDto(5410216768951324L,
+		KreditnaKarticaCUDto kreditnaKarticaCreateDto = new KreditnaKarticaCUDto(5410216768951324L,
 				"Stefan", "Budimac", 321);
 		HttpEntity<KreditnaKarticaCUDto> request = new HttpEntity<>(kreditnaKarticaCreateDto);
 		//when
 		ResponseEntity<KreditnaKarticaDto> response = restTemplate
-				.exchange(URL + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
+				.exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
         	System.out.println("Succesfully added credit card B");
@@ -149,30 +151,12 @@ public class Main {
 	}
 	public static void testCCDisplay(RestTemplate restTemplate) {
 		ResponseEntity<KreditnaKarticaPageWrapper> response = restTemplate
-				.exchange(URL + CC_URL, HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
+				.exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL, HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
 		
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			for(KreditnaKarticaDto cc : response.getBody().getContent()) {
 				System.out.println(cc.getKrajKartice());
 			}
 		}
-	}
-	private static KreditnaKarticaCUDto createTestKreditnaKarticaCUDto(Long brojKartice, String imeVlasnika, String prezimeVlasnika, Integer sigurnosniBroj) {
-		KreditnaKarticaCUDto kreditnaKarticaCUDto = new KreditnaKarticaCUDto();
-		kreditnaKarticaCUDto.setBrojKartice(brojKartice);
-		kreditnaKarticaCUDto.setImeVlasnika(imeVlasnika);
-		kreditnaKarticaCUDto.setPrezimeVlasnika(prezimeVlasnika);
-		kreditnaKarticaCUDto.setSigurnosniBroj(sigurnosniBroj);
-		//kreditnaKarticaCUDto.setKorisnikId(korisnikId);
-		return kreditnaKarticaCUDto;
-	}
-	private static KorisnikCUDto createTestKorisnikCUDto(String email, String sifra, String ime, String prezime, String brojPasosa) {
-		KorisnikCUDto korisnikCUDto = new KorisnikCUDto();
-		korisnikCUDto.setEmail(email);
-		korisnikCUDto.setSifra(sifra);
-		korisnikCUDto.setIme(ime);
-		korisnikCUDto.setPrezime(prezime);
-		korisnikCUDto.setBrojPasosa(brojPasosa);
-		return korisnikCUDto;
 	}
 }
