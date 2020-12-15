@@ -68,7 +68,7 @@ public class MainSceneWrapper extends SceneWrapper {
 	public MainSceneWrapper(KorisnikDto korisnikDto) {
 		BorderPane pozadina=new BorderPane();
 		
-		letCriteriaDto = FlightOperator.getInstance().getLetCriteriaDto();
+		letCriteriaDto = new LetCriteriaDto();
 		
 		signOut = new MenuItem("Odjavi se");
 		signOut.setOnAction(new EventHandler<ActionEvent>() {

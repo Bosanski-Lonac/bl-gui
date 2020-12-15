@@ -1,18 +1,15 @@
 package gui;
 
 import controller.DoKorisnickiSignup;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 public class KorisnickiSignupDialog extends Dialog<Boolean> {
 	private Label emailLbl;
@@ -25,11 +22,6 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 	private TextField imeTf;
 	private Label prezimeLbl;
 	private TextField prezimeTf;
-	
-	private Button ok;
-	private Button cancel;
-	
-	private HBox buttons;
 	
 	public KorisnickiSignupDialog() {
 		super();
@@ -65,20 +57,8 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		
 		pozadina.setCenter(forma);
 		
-		ok=new Button("Ok");
-		ok.setOnAction(new DoKorisnickiSignup(this));
-		cancel=new Button("Cancel");
-		cancel.setOnAction(new EventHandler<ActionEvent>() {
-			@Override public void handle(ActionEvent e) {
-				Stage stage=(Stage)cancel.getScene().getWindow();
-				stage.close();
-			}
-		});
-		
-		buttons=new HBox(ok, cancel);
-		buttons.setAlignment(Pos.CENTER);
-		
-		pozadina.setBottom(buttons);
+		this.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+		((Button)this.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(new DoKorisnickiSignup(this));
 		
 		getDialogPane().setContent(pozadina);
 		getDialogPane().setPrefWidth(400);

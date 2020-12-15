@@ -17,11 +17,9 @@ public class FlightOperator {
 	
 	private static FlightOperator instance = null;
 	
-	private LetCriteriaDto letCriteriaDto;
 	private RestTemplate restTemplate;
 	
 	private FlightOperator() {
-		letCriteriaDto = new LetCriteriaDto();
 	}
 	
 	public RestTemplate getRestTemplate() {
@@ -49,13 +47,5 @@ public class FlightOperator {
 			instance=new FlightOperator();
 		}
 		return instance;
-	}
-
-	public LetCriteriaDto getLetCriteriaDto() {
-		return letCriteriaDto;
-	}
-
-	public void setLetCriteriaDto(LetCriteriaDto letCriteriaDto) {
-		this.letCriteriaDto = letCriteriaDto;
 	}
 }
