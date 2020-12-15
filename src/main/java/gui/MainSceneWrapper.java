@@ -38,11 +38,6 @@ public class MainSceneWrapper extends SceneWrapper {
 	public MainSceneWrapper(KorisnikDto korisnikDto) {
 		BorderPane pozadina=new BorderPane();
 		
-		top = new HBox();
-		bottom = new HBox();
-		
-		stack = new StackPane();
-		
 		signOut = new MenuItem("Odjavi se");
 		signOut.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -71,24 +66,23 @@ public class MainSceneWrapper extends SceneWrapper {
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, signOut);
 		}
 		
-		
-		stack.getChildren().addAll(userButton);
+		stack = new StackPane(userButton);
 		stack.setAlignment(Pos.CENTER_RIGHT);
 		StackPane.setMargin(userButton, new Insets(0, 10, 0, 0));
 		
+		top = new HBox(stack);
 		top.setPadding(new Insets(15, 12, 15, 12));
 		top.setSpacing(10);
 		top.setStyle("-fx-background-color: #336699;");
-		
-		top.getChildren().add(stack);
 		HBox.setHgrow(stack, Priority.ALWAYS);
 		
 		flights = new TableView<>();
 		
 		search = new Button("Pretraga");
+		bottom = new HBox(search);
 		bottom.setPadding(new Insets(15, 12, 15, 12));
-		bottom.getChildren().add(search);
 		bottom.setAlignment(Pos.CENTER);
+		bottom.setSpacing(10);
 		
 		pozadina.setTop(top);
 		pozadina.setCenter(flights);

@@ -4,6 +4,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,15 +15,12 @@ import javafx.scene.layout.HBox;
 import model.UserOperator;
 
 public class ProfileSceneWrapper extends SceneWrapper {
-	private Scene glavniEkran;
-	
 	private Button cancel;
 	private Button save;
 	
 	private HBox bottom;
 	
 	public ProfileSceneWrapper(Scene glavniEkran) {
-		this.glavniEkran = glavniEkran;
 		BorderPane pozadina=new BorderPane();
 		
 		cancel = new Button("Poništi");
@@ -54,6 +53,8 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		});
 		
 		bottom = new HBox(save, cancel);
+		bottom.setPadding(new Insets(15, 12, 15, 12));
+		bottom.setAlignment(Pos.CENTER);
 		
 		pozadina.setBottom(bottom);
 		this.scena = new Scene(pozadina);
