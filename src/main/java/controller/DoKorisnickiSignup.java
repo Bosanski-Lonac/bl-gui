@@ -1,8 +1,16 @@
 package controller;
 
+import org.springframework.web.client.HttpClientErrorException;
+
+import dto.KorisnikDto;
 import gui.KorisnickiSignupDialog;
+import gui.MainSceneWrapper;
+import gui.MainView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Stage;
 import model.UserOperator;
 
 public class DoKorisnickiSignup implements EventHandler<ActionEvent> {
@@ -14,6 +22,22 @@ public class DoKorisnickiSignup implements EventHandler<ActionEvent> {
 
 	@Override
 	public void handle(ActionEvent event) {
-		UserOperator.getInstance().registerUser(dialog.getEmail(), dialog.getPassword(), dialog.getIme(), dialog.getPrezime(), dialog.getBrojPasosa());
+		String email = dialog.getEmail();
+		String password = dialog.getPassword();
+		String ime = dialog.getIme();
+		String prezime = dialog.getPrezime();
+		String brojPasosa = dialog.getBrojPasosa();
+		try {
+			KorisnikDto korisnikDto = UserOperator.getInstance().registerUser(email,
+					password, ime, prezime, brojPasosa);
+			MainView.getInstance().setScene(new MainSceneWrapper(korisnikDto).getScena());
+		} catch (HttpClientErrorException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Communication Error");
+			alert.setHeaderText(null);
+			alert.setContentText(e.getMessage());
+			alert.showAndWait();
+		}
+		dialog.close();
 	}
 }

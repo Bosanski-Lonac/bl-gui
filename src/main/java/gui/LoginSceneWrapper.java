@@ -4,6 +4,7 @@ import controller.LoginAction;
 import controller.SignupAction;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,7 +16,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 public class LoginSceneWrapper extends SceneWrapper {
 	private Button signupBtn;
@@ -27,7 +27,6 @@ public class LoginSceneWrapper extends SceneWrapper {
 	private Label passwordLbl;
 	private PasswordField passwordTf;
 	
-	private VBox login;
 	private HBox register;
 	
 	public LoginSceneWrapper() {
@@ -43,7 +42,8 @@ public class LoginSceneWrapper extends SceneWrapper {
 		register = new HBox(signupBtn);
 		register.setAlignment(Pos.CENTER);
 		register.setPadding(new Insets(15, 0, 15, 0));
-		pozadina.setTop(register);
+		signupBtn.setStyle("-fx-font-size: 10pt;");
+		pozadina.setBottom(register);
 		
 		cbAdmin.selectedProperty().addListener(new ChangeListener<Boolean>() {
 	           public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
@@ -68,15 +68,11 @@ public class LoginSceneWrapper extends SceneWrapper {
 		forma.add(usernameTf, 0, 2);
 		forma.add(passwordLbl, 0, 3);
 		forma.add(passwordTf, 0, 4);
+		forma.add(cbAdmin, 0, 5);
+		GridPane.setHalignment(loginBtn, HPos.RIGHT);
+		forma.add(loginBtn, 0, 6);
 		
 		pozadina.setCenter(forma);
-		
-		login = new VBox(cbAdmin, loginBtn);
-		login.setAlignment(Pos.CENTER);
-		login.setPadding(new Insets(15, 0, 15, 0));
-		login.setSpacing(10);
-		
-		pozadina.setBottom(login);
 		
 		this.scena=new Scene(pozadina);
 	}

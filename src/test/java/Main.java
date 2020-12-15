@@ -53,7 +53,7 @@ public class Main {
                 .exchange(URL + KORISNIK_URL + "/login", HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	id = response.getBody().getId();
+        	id = response.getBody().getKorisnikDto().getId();
         	return response.getBody().getToken();
         }
         return null;

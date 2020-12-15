@@ -7,6 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -17,7 +18,7 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 	private Label emailLbl;
 	private TextField emailTf;
 	private Label passwordLbl;
-	private TextField passwordTf;
+	private PasswordField passwordTf;
 	private Label brojPasosaLbl;
 	private TextField brojPasosaTf;
 	private Label imeLbl;
@@ -38,7 +39,7 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		emailLbl=new Label("Email");
 		emailTf=new TextField();
 		passwordLbl=new Label("Password");
-		passwordTf=new TextField();
+		passwordTf=new PasswordField();
 		brojPasosaLbl=new Label("Broj pasosa");
 		brojPasosaTf=new TextField();
 		imeLbl=new Label("Ime");

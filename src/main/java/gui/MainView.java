@@ -12,8 +12,8 @@ public class MainView extends Stage {
 		UserOperator.getInstance().setRestTemplate(new RestTemplate());
 		
 		setScene(new LoginSceneWrapper().getScena());
-		setWidth(400);
-		setHeight(400);
+		setWidth(1024);
+		setHeight(768);
 		setTitle("Bosanski Lonac");
 		show();
 	}

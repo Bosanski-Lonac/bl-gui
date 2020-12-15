@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import dto.KorisnikCUDto;
@@ -24,7 +25,7 @@ public class UserOperator {
 	
 	private static UserOperator instance = null;
 	
-	private Long id;
+	private KorisnikDto korisnikDto;
 	private RestTemplate restTemplate;
 	
 	private UserOperator() {
@@ -38,7 +39,7 @@ public class UserOperator {
 		this.restTemplate = restTemplate;
 	}
 	
-	public void registerUser(String email, String sifra, String ime, String prezime, String brojPasosa) {
+	public KorisnikDto registerUser(String email, String sifra, String ime, String prezime, String brojPasosa) {
 		//given
 		KorisnikCUDto korisnikCreateDto = new KorisnikCUDto(email,
 				sifra, ime, prezime, brojPasosa);
@@ -48,13 +49,16 @@ public class UserOperator {
                 .exchange(URL + KORISNIK_URL, HttpMethod.POST, request, TokenResponseDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.CREATED)) {
-        	id = response.getBody().getId();
+        	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
+        	return korisnikDto;
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
 	}
 	
-	public void signInUser(String email, String sifra) {
+	public KorisnikDto signInUser(String email, String sifra) {
 		//given
 		TokenRequestDto tokenRequest = new TokenRequestDto();
 		tokenRequest.setUsername(email);
@@ -65,13 +69,16 @@ public class UserOperator {
                 .exchange(URL + KORISNIK_URL + "/login", HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	id = response.getBody().getId();
+        	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
+        	return korisnikDto;
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
 	}
 	
-	public void signInAdmin(String username, String sifra) {
+	public KorisnikDto signInAdmin(String username, String sifra) {
 		//given
 		TokenRequestDto tokenRequest = new TokenRequestDto();
 		tokenRequest.setUsername(username);
@@ -82,26 +89,31 @@ public class UserOperator {
                 .exchange(URL + ADMIN_URL, HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	id = response.getBody().getId();
+        	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
+        	return korisnikDto;
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
 	}
 	
 	public void signOut() {
 		restTemplate.setInterceptors(Collections.emptyList());
-		id = null;
+		korisnikDto = null;
 	}
 	
 	public KorisnikDto getUserInfo() {
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + id.toString(), HttpMethod.POST, null, KorisnikDto.class);
+                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, null, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	return response.getBody();
+        	korisnikDto = response.getBody();
+        	return korisnikDto;
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
-        return null;
 	}
 	
 	public KorisnikDto updateUserInfo(KorisnikCUDto korisnikUpdateDto) {
@@ -109,20 +121,24 @@ public class UserOperator {
 		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikUpdateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + id.toString(), HttpMethod.POST, request, KorisnikDto.class);
+                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, request, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
-        	return response.getBody();
+        	korisnikDto = response.getBody();
+        	return korisnikDto;
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
-        return null;
 	}
 	
 	public void deleteUser() {
 		ResponseEntity<Void> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + id.toString(), HttpMethod.DELETE, null, Void.class);
+                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.DELETE, null, Void.class);
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			signOut();
-		}
+		} else {
+        	throw new HttpClientErrorException(response.getStatusCode());
+        }
 	}
 	
 	public KreditnaKarticaDto addCC(Long brojKartice, String ime, String prezime, int sigurnosniBroj) {
@@ -132,28 +148,31 @@ public class UserOperator {
 		HttpEntity<KreditnaKarticaCUDto> request = new HttpEntity<>(kreditnaKarticaCreateDto);
 		//when
 		ResponseEntity<KreditnaKarticaDto> response = restTemplate
-				.exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
+				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
         	return response.getBody();
+        } else {
+        	throw new HttpClientErrorException(response.getStatusCode());
         }
-		return null;
 	}
 	
 	public KreditnaKarticaPageWrapper displayCC() {
 		ResponseEntity<KreditnaKarticaPageWrapper> response = restTemplate
-				.exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL, HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
+				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL, HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
 		
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			return response.getBody();
-		}
-		return null;
+		} else {
+        	throw new HttpClientErrorException(response.getStatusCode());
+        }
 	}
 	
 	public void deleteCC(Long ccId) {
 		ResponseEntity<Void> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + id.toString() + CC_URL + "/" + ccId.toString(), HttpMethod.DELETE, null, Void.class);
-		if(response.getStatusCode().equals(HttpStatus.OK)) {
+                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL + "/" + ccId.toString(), HttpMethod.DELETE, null, Void.class);
+		if(!response.getStatusCode().equals(HttpStatus.OK)) {
+			throw new HttpClientErrorException(response.getStatusCode());
 		}
 	}
 	
