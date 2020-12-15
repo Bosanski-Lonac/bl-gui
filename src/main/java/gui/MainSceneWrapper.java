@@ -108,7 +108,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		top.setStyle("-fx-background-color: #336699;");
 		HBox.setHgrow(stack, Priority.ALWAYS);
 		
-		letovi = new TableView<>();
+		createTable();
 		
 		createAccordion();
 		
@@ -265,8 +265,8 @@ public class MainSceneWrapper extends SceneWrapper {
 		accordion = new Accordion(departureTpane, arrivalTpane, durationTpane, cenaTpane);
 	}
 	
-	private void setTable() {
-		ObservableList<LetDto> letoviData = FXCollections.observableArrayList(letPageWrapper.getContent());
+	private void createTable() {
+		letovi = new TableView<>();
 		
 		TableColumn<LetDto, String> pocetnaDestinacija = new TableColumn<>("Pocetna destinacija");
 		pocetnaDestinacija.setCellValueFactory(new PropertyValueFactory<LetDto, String>("pocetnaDestinacija"));
@@ -284,7 +284,11 @@ public class MainSceneWrapper extends SceneWrapper {
 		kapacitet.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("kapacitet"));
 		
 		letovi.getColumns().addAll(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, kapacitet);
-		
+	}
+	
+	private void setTable() {
+		ObservableList<LetDto> letoviData = FXCollections.observableArrayList(letPageWrapper.getContent());
+
 		letovi.setItems(letoviData);
 	}
 }

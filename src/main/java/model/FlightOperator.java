@@ -33,25 +33,6 @@ public class FlightOperator {
 	}
 	
 	public LetPageWrapper getFlights(LetCriteriaDto letCriteriaDto) {
-		//given
-		//HttpEntity<LetCriteriaDto> request = new HttpEntity<>(letCriteriaDto);
-		//System.out.println(letCriteriaDto);
-		
-		/*letCriteriaDto.setPocetnaDestinacija("test");
-		letCriteriaDto.setKrajnjaDestinacija("test2");
-		letCriteriaDto.setMinDuzina(1);
-		letCriteriaDto.setMaxDuzina(3);
-		letCriteriaDto.setMinCena(1);
-		letCriteriaDto.setMaxCena(3);
-		letCriteriaDto.setStranica(0);*/
-		
-		/*System.out.println(letCriteriaDto.getPocetnaDestinacija());
-		System.out.println(letCriteriaDto.getKrajnjaDestinacija());
-		System.out.println(letCriteriaDto.getMinDuzina());
-		System.out.println(letCriteriaDto.getMaxDuzina());
-		System.out.println(letCriteriaDto.getMinCena());
-		System.out.println(letCriteriaDto.getMaxCena());*/
-		
 		//when
 		ResponseEntity<LetPageWrapper> response = restTemplate
 				.exchange(URL + LET_URL + letCriteriaDto.getQuery(), HttpMethod.GET, null, LetPageWrapper.class);
