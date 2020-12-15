@@ -3,13 +3,12 @@ package controller;
 import org.springframework.web.client.HttpClientErrorException;
 
 import dto.KorisnikDto;
+import gui.ExceptionHandler;
 import gui.LoginSceneWrapper;
 import gui.MainSceneWrapper;
 import gui.MainView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import model.UserOperator;
 
 public class LoginAction implements EventHandler<ActionEvent> {
@@ -34,11 +33,7 @@ public class LoginAction implements EventHandler<ActionEvent> {
 			}
 			MainView.getInstance().setScene(new MainSceneWrapper(korisnikDto).getScena());
 		} catch (HttpClientErrorException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Communication Error");
-			alert.setHeaderText(null);
-			alert.setContentText(e.getMessage());
-			alert.showAndWait();
+			ExceptionHandler.prikaziGresku(e);
 		}
 	}
 }
