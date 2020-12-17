@@ -90,7 +90,7 @@ public class MainSceneWrapper extends SceneWrapper {
 			edit.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					MainView.getInstance().setScene(new ProfileSceneWrapper(scena).getScena());
+					MainView.getInstance().setScene(new ProfileSceneWrapper(scena, korisnikDto).getScena());
 				}
 			});
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);
