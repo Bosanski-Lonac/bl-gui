@@ -23,6 +23,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -43,6 +45,7 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private TextField tfEmail;
 	private Label lblPassword;
 	private PasswordField pfPassword;
+	private Label lblBrojPasosa;
 	private TextField tfBrojPasosa;
 	private Label lblIme;
 	private TextField tfIme;
@@ -51,6 +54,7 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private Label lblRank;
 	
 	private HBox hbUserPass;
+	private HBox hbPasos;
 	private VBox user;
 	private VBox left;
 	
@@ -73,6 +77,8 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private HBox hbSigurnosniBroj;
 	private VBox vbCardInfo;
 	private VBox vbCardExample;
+	
+	private Button btnCreditCard;
 		
 	private Button cancel;
 	private Button save;
@@ -105,10 +111,15 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		tfEmail=new TextField();
 		tfEmail.setText(korisnikDto.getUsername());
 		pfPassword=new PasswordField();
+		tfBrojPasosa=new TextField();
+		lblBrojPasosa=new Label("Broj pasosa: ");
+		tfBrojPasosa.setText(korisnikDto.getBrojPasosa());
 		
 		hbUserPass=new HBox(10, lblEmail, tfEmail, lblPassword, pfPassword);
+		hbPasos=new HBox(10, lblBrojPasosa, tfBrojPasosa);
+		hbPasos.setAlignment(Pos.CENTER);
 		
-		user=new VBox(10, imageView, lblRank, hbUserPass);
+		user=new VBox(10, imageView, lblRank, hbUserPass, hbPasos);
 		user.setAlignment(Pos.BASELINE_CENTER);
 		user.setPadding(new Insets(32, 32, 32, 32));
 		
@@ -160,18 +171,54 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		for (KreditnaKarticaDto kreditnaKarticaDto : kartice) {
 			TextField tfCCBrojKartice=new TextField();
+			tfCCBrojKartice.setText(kreditnaKarticaDto.getKrajKartice());
 			TextField tfCCImeVlasnika=new TextField();
+			tfCCImeVlasnika.setText(kreditnaKarticaDto.getImeVlasnika());
 			TextField tfCCPrezimeVlasnika=new TextField();
+			tfCCPrezimeVlasnika.setText(kreditnaKarticaDto.getPrezimeVlasnika());
 			TextField tfCCSigurnosniBroj=new TextField();
+			tfCCSigurnosniBroj.setText("***");
 			
 			HBox hbVlasnik=new HBox(10, tfCCImeVlasnika, tfCCPrezimeVlasnika);
+			hbVlasnik.setAlignment(Pos.CENTER);
 			
 			VBox vbCard=new VBox(10, tfCCBrojKartice, hbVlasnik, tfCCSigurnosniBroj);
+			vbCard.setAlignment(Pos.CENTER);
 			
-			cards.add(vbCard);
+			FlowPane fpCard=new FlowPane();
+			fpCard.getChildren().add(vbCard);
+			fpCard.setPadding(new Insets(9, 9, 9, 9));
+			fpCard.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			fpCard.setAlignment(Pos.CENTER);
+			fpCard.setAlignment(Pos.CENTER);
+			
+			VBox kartica=new VBox(10, fpCard);
+			kartica.setPadding(new Insets(9, 9, 9, 9));
+			kartica.setAlignment(Pos.CENTER);
+			kartica.setPrefWidth(300);
+			kartica.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+			
+			cards.add(kartica);
 		}
+		Image CCimage = new Image("ikonice/creditcard.jpg");
+		ImageView CCimageView = new ImageView(CCimage);
+		
+		CCimageView.setFitHeight(100);
+		CCimageView.setFitWidth(200);
+		
+		btnCreditCard=new Button("", CCimageView);
+		btnCreditCard.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				MainView.getInstance().setScene(new CreditCardAdditionWrapper(scena).getScena());
+			}
+			
+		});
+		
 		FlowPane fp=new FlowPane();
 		fp.setPrefHeight(300);
+		fp.getChildren().add(btnCreditCard);
 		fp.getChildren().addAll(cards);
 		ScrollPane kreditneKartice=new ScrollPane();
 		kreditneKartice.setContent(fp);
