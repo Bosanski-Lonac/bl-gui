@@ -23,7 +23,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -46,20 +51,33 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private Label lblRank;
 	
 	private HBox hbUserPass;
+	private VBox user;
 	private VBox left;
+	
 	private HBox hbFullName;
 	
-	private HBox hbCards;
+	private VBox right;
 	
-	private Button visaBtn;
-	private Button mcBtn;
+	private Label lblBrojKartice;
+	private Label lblImeVlasnika;
+	private Label lblPrezimeVlasnika;
+	private Label lblSigurnosniBroj;
+	
+	private TextField tfImeVlasnika;
+	private TextField tfPrezimeVlasnika;
+	private TextField tfBrojKartice;
+	private TextField tfSigurnosniBroj;
+	
+	private HBox hbBrojKartice;
+	private HBox hbVlasnik;
+	private HBox hbSigurnosniBroj;
+	private VBox vbCardInfo;
+	private VBox vbCardExample;
 		
 	private Button cancel;
 	private Button save;
 	
 	private HBox bottom;
-	private VBox vbCardInfo;
-	private VBox right;
 	
 	@SuppressWarnings("unused")
 	public ProfileSceneWrapper(Scene glavniEkran) {
@@ -70,8 +88,8 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		Image image = new Image("ikonice/profile.png");
 		ImageView imageView = new ImageView(image);
 		
-		imageView.setFitHeight(100);
-		imageView.setFitWidth(100);
+		imageView.setFitHeight(72);
+		imageView.setFitWidth(72);
 		
 		lblRank=new Label(korisnikDto.getRank().toString());
 		if(korisnikDto.getRank()==Rank.BRONZA) {
@@ -82,9 +100,6 @@ public class ProfileSceneWrapper extends SceneWrapper {
 			lblRank.setTextFill(Color.web("#ffd700"));
 		}
 		
-		//lblRank=new Label("Bronza");
-		//lblRank.setTextFill(Color.web("#cd7f32"));
-		
 		lblEmail=new Label("Email: ");
 		lblPassword=new Label("Sifra: ");
 		tfEmail=new TextField();
@@ -93,7 +108,16 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		hbUserPass=new HBox(10, lblEmail, tfEmail, lblPassword, pfPassword);
 		
-		left=new VBox(10, imageView, lblRank, hbUserPass);
+		user=new VBox(10, imageView, lblRank, hbUserPass);
+		user.setAlignment(Pos.BASELINE_CENTER);
+		user.setPadding(new Insets(32, 32, 32, 32));
+		
+		FlowPane fpLeft=new FlowPane(user);
+		fpLeft.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		fpLeft.setPadding(new Insets(9, 9, 9, 9));
+		
+		left=new VBox(10, fpLeft);
+		left.setPadding(new Insets(32, 32, 32, 32));
 		
 		pozadina.setLeft(left);
 		
@@ -106,57 +130,61 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		hbFullName=new HBox(10, lblIme, tfIme, lblPrezime, tfPrezime);
 		
+		lblBrojKartice=new Label("Broj: ");
+		lblImeVlasnika=new Label("Ime: ");
+		lblPrezimeVlasnika=new Label("Prezime: ");
+		lblSigurnosniBroj=new Label("Sigurnosni broj: ");
+		
+		tfImeVlasnika=new TextField();
+		tfImeVlasnika.setText("Marko");
+		tfImeVlasnika.setEditable(false);
+		tfPrezimeVlasnika=new TextField();
+		tfPrezimeVlasnika.setText("Milosevic");
+		tfPrezimeVlasnika.setEditable(false);
+		tfBrojKartice=new TextField();
+		tfBrojKartice.setText("**** **** **** 3946");
+		tfBrojKartice.setEditable(false);
+		tfSigurnosniBroj=new TextField();
+		tfSigurnosniBroj.setText("123");
+		tfSigurnosniBroj.setEditable(false);
+		
+		hbBrojKartice=new HBox(10, lblBrojKartice, tfBrojKartice);
+		hbVlasnik=new HBox(10, lblImeVlasnika, tfImeVlasnika, lblPrezimeVlasnika, tfPrezimeVlasnika);
+		hbSigurnosniBroj=new HBox(10, lblSigurnosniBroj, tfSigurnosniBroj);
+		
+		vbCardExample=new VBox(10, hbBrojKartice, hbVlasnik, hbSigurnosniBroj);
+		
 		KreditnaKarticaPageWrapper kkpw=UserOperator.getInstance().displayCC();
 		List<KreditnaKarticaDto> kartice=kkpw.getContent();
-		
-		Image visaKarticaImg = new Image("ikonice/visa.png");
-		ImageView visaKarticaImgView = new ImageView(visaKarticaImg);
-		
-		visaKarticaImgView.setFitHeight(50);
-		visaKarticaImgView.setFitWidth(50);
-		
-		visaBtn=new Button("Visa", visaKarticaImgView);
-		visaBtn.setDisable(true);
-		
-		Image mcKarticaImg = new Image("ikonice/mastercard.png");
-		ImageView mcKarticaImgView = new ImageView(mcKarticaImg);
-		
-		mcKarticaImgView.setFitHeight(50);
-		mcKarticaImgView.setFitWidth(50);
-		
-		mcBtn=new Button("MasterCard", mcKarticaImgView);
-		mcBtn.setDisable(true);
-		
-		hbCards=new HBox(10, visaBtn, mcBtn);
-		
 		List<VBox> cards=new ArrayList<>();
 		
 		for (KreditnaKarticaDto kreditnaKarticaDto : kartice) {
-			Label lblBrojKartice=new Label("Broj: ");
-			Label lblImeVlasnika=new Label("Ime: ");
-			Label lblPrezimeVlasnika=new Label("Prezime: ");
-			Label lblSigurnosniBroj=new Label("Sigurnosni broj: ");
+			TextField tfCCBrojKartice=new TextField();
+			TextField tfCCImeVlasnika=new TextField();
+			TextField tfCCPrezimeVlasnika=new TextField();
+			TextField tfCCSigurnosniBroj=new TextField();
 			
-			TextField tfImeVlasnika=new TextField();
-			TextField tfPrezimeVlasnika=new TextField();
-			TextField tfBrojKartice=new TextField();
-			TextField tfSigurnosniBroj=new TextField();
+			HBox hbVlasnik=new HBox(10, tfCCImeVlasnika, tfCCPrezimeVlasnika);
 			
-			HBox hbBrojKartice=new HBox(10, lblBrojKartice, tfBrojKartice);
-			HBox hbVlasnik=new HBox(10, lblImeVlasnika, tfImeVlasnika, lblPrezimeVlasnika, tfPrezimeVlasnika);
-			HBox hbSigurnosniBroj=new HBox(10, lblSigurnosniBroj, tfSigurnosniBroj);
-			VBox vbCardInfo=new VBox(10, hbBrojKartice, hbVlasnik, hbSigurnosniBroj);
+			VBox vbCard=new VBox(10, tfCCBrojKartice, hbVlasnik, tfCCSigurnosniBroj);
 			
-			cards.add(vbCardInfo);
+			cards.add(vbCard);
 		}
 		FlowPane fp=new FlowPane();
+		fp.setPrefHeight(300);
 		fp.getChildren().addAll(cards);
 		ScrollPane kreditneKartice=new ScrollPane();
 		kreditneKartice.setContent(fp);
 		
-		vbCardInfo=new VBox(10, kreditneKartice, hbCards);
+		FlowPane flow=new FlowPane();
+		flow.getChildren().add(vbCardExample);
+		flow.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		flow.setPadding(new Insets(9, 9, 9, 9));
+		vbCardInfo=new VBox(10, kreditneKartice, flow);
 		
 		right=new VBox(10, hbFullName, vbCardInfo);
+		right.setAlignment(Pos.BASELINE_CENTER);
+		right.setPadding(new Insets(32, 32, 32, 32));
 		
 		pozadina.setRight(right);
 		
