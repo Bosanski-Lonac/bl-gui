@@ -38,6 +38,7 @@ import model.UserOperator;
 import wrapper.LetPageWrapper;
 
 public class MainSceneWrapper extends SceneWrapper {
+	private KorisnikDto korisnikDto;
 	private LetCriteriaDto letCriteriaDto;
 	private LetPageWrapper letPageWrapper;
 	
@@ -65,9 +66,10 @@ public class MainSceneWrapper extends SceneWrapper {
 	private HBox top;
 	private HBox bottom;
 	
-	public MainSceneWrapper(KorisnikDto korisnikDto) {
+	public MainSceneWrapper() {
 		BorderPane pozadina=new BorderPane();
 		
+		korisnikDto = UserOperator.getInstance().getUserInfo(false);
 		letCriteriaDto = new LetCriteriaDto();
 		
 		signOut = new MenuItem("Odjavi se");
@@ -90,7 +92,7 @@ public class MainSceneWrapper extends SceneWrapper {
 			edit.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					MainView.getInstance().setScene(new ProfileSceneWrapper(scena, korisnikDto).getScena());
+					MainView.getInstance().setScene(new ProfileSceneWrapper(scena).getScena());
 				}
 			});
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);

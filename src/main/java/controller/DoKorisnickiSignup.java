@@ -2,7 +2,6 @@ package controller;
 
 import org.springframework.web.client.HttpClientErrorException;
 
-import dto.KorisnikDto;
 import gui.ExceptionHandler;
 import gui.KorisnickiSignupDialog;
 import gui.MainSceneWrapper;
@@ -26,9 +25,9 @@ public class DoKorisnickiSignup implements EventHandler<ActionEvent> {
 		String prezime = dialog.getPrezime();
 		String brojPasosa = dialog.getBrojPasosa();
 		try {
-			KorisnikDto korisnikDto = UserOperator.getInstance().registerUser(email,
+			UserOperator.getInstance().registerUser(email,
 					password, ime, prezime, brojPasosa);
-			MainView.getInstance().setScene(new MainSceneWrapper(korisnikDto).getScena());
+			MainView.getInstance().setScene(new MainSceneWrapper().getScena());
 		} catch (HttpClientErrorException e) {
 			ExceptionHandler.prikaziGresku(e);
 		}

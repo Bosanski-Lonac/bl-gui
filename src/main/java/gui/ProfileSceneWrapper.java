@@ -32,6 +32,8 @@ import model.UserOperator;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class ProfileSceneWrapper extends SceneWrapper {
+	private KorisnikDto korisnikDto;
+	
 	private Label lblEmail;
 	private TextField tfEmail;
 	private Label lblPassword;
@@ -60,8 +62,10 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private VBox right;
 	
 	@SuppressWarnings("unused")
-	public ProfileSceneWrapper(Scene glavniEkran, KorisnikDto korisnikDto) {
+	public ProfileSceneWrapper(Scene glavniEkran) {
 		BorderPane pozadina=new BorderPane();
+		
+		korisnikDto = UserOperator.getInstance().getUserInfo(false);
 		
 		Image image = new Image("ikonice/profile.png");
 		ImageView imageView = new ImageView(image);
@@ -69,17 +73,17 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		imageView.setFitHeight(100);
 		imageView.setFitWidth(100);
 		
-		/*lblRank=new Label(korisnikDto.getRank().toString());
+		lblRank=new Label(korisnikDto.getRank().toString());
 		if(korisnikDto.getRank()==Rank.BRONZA) {
 			lblRank.setTextFill(Color.web("#cd7f32"));
 		}else if(korisnikDto.getRank()==Rank.SREBRO) {
 			lblRank.setTextFill(Color.web("#c0c0c0"));
 		}else {
 			lblRank.setTextFill(Color.web("#ffd700"));
-		}*/
+		}
 		
-		lblRank=new Label("Bronza");
-		lblRank.setTextFill(Color.web("#cd7f32"));
+		//lblRank=new Label("Bronza");
+		//lblRank.setTextFill(Color.web("#cd7f32"));
 		
 		lblEmail=new Label("Email: ");
 		lblPassword=new Label("Sifra: ");

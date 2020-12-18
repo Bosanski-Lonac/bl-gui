@@ -2,7 +2,6 @@ package controller;
 
 import org.springframework.web.client.HttpClientErrorException;
 
-import dto.KorisnikDto;
 import gui.ExceptionHandler;
 import gui.LoginSceneWrapper;
 import gui.MainSceneWrapper;
@@ -25,13 +24,12 @@ public class LoginAction implements EventHandler<ActionEvent> {
 		String username = scena.getUsernameField();
 		String password = scena.getPasswordField();
 		try {
-			KorisnikDto korisnikDto;
 			if(admin) {
-				korisnikDto = UserOperator.getInstance().signInAdmin(username, password);
+				UserOperator.getInstance().signInAdmin(username, password);
 			} else {
-				korisnikDto = UserOperator.getInstance().signInUser(username, password);
+				UserOperator.getInstance().signInUser(username, password);
 			}
-			MainView.getInstance().setScene(new MainSceneWrapper(korisnikDto).getScena());
+			MainView.getInstance().setScene(new MainSceneWrapper().getScena());
 		} catch (HttpClientErrorException e) {
 			ExceptionHandler.prikaziGresku(e);
 		}

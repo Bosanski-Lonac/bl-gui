@@ -106,7 +106,10 @@ public class UserOperator {
 		korisnikDto = null;
 	}
 	
-	public KorisnikDto getUserInfo() {
+	public KorisnikDto getUserInfo(boolean refresh) {
+		if(!refresh) {
+			return korisnikDto;
+		}
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
                 .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, null, KorisnikDto.class);
