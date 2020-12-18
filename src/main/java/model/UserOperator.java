@@ -124,7 +124,7 @@ public class UserOperator {
 		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikUpdateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, request, KorisnikDto.class);
+                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.PUT, request, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody();
