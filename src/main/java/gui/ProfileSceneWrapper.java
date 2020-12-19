@@ -36,6 +36,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import model.UserOperator;
+import security.EmailSender;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class ProfileSceneWrapper extends SceneWrapper {
@@ -228,6 +229,7 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		flow.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		flow.setPadding(new Insets(9, 9, 9, 9));
 		vbCardInfo=new VBox(10, kreditneKartice, flow);
+		vbCardInfo.setBackground(new Background(new BackgroundFill(Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		right=new VBox(10, hbFullName, vbCardInfo);
 		right.setAlignment(Pos.BASELINE_CENTER);
@@ -257,6 +259,9 @@ public class ProfileSceneWrapper extends SceneWrapper {
 					String ime=tfIme.getText();
 					String prezime=tfIme.getText();
 					KorisnikCUDto korisnikUpdateDto=new KorisnikCUDto(email, password, brojPasosa, ime, prezime);
+					if(!(korisnikDto.getUsername().equals(korisnikUpdateDto.getEmail()))) {
+						EmailSender.getInstance().sendEmail(korisnikUpdateDto.getEmail(), "Potvrda o promeni email adrese", "Uspešno ste promenili svoju email adresu.");
+					}
 					UserOperator.getInstance().updateUserInfo(korisnikUpdateDto);
 				} catch (HttpClientErrorException e) {
 					Alert alert = new Alert(AlertType.ERROR);
