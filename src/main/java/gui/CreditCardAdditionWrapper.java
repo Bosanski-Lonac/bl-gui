@@ -43,7 +43,7 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 	
 	private HBox bottom;
 	
-	public CreditCardAdditionWrapper(Scene userProfile) {
+	public CreditCardAdditionWrapper(ProfileSceneWrapper userProfile) {
 		BorderPane pozadina=new BorderPane();
 		
 		lblBrojKartice=new Label("Broj kreditne kartice: ");
@@ -87,7 +87,13 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 				String prezimeVlasnika=tfPrezimeVlasnika.getText();
 				Integer sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
 				UserOperator.getInstance().addCC(brojKartice, imeVlasnika, prezimeVlasnika, sigurnosniBroj);
-				MainView.getInstance().setScene(userProfile);
+				userProfile.listCards(userProfile.getCards());
+				FlowPane fp=new FlowPane();
+				userProfile.setFp(fp);
+				userProfile.getFp().getChildren().add(userProfile.getBtnCreditCard());
+				userProfile.getFp().getChildren().addAll(userProfile.getCards());
+				userProfile.getKreditneKartice().setContent(userProfile.getFp());
+				MainView.getInstance().setScene(userProfile.getScena());
 			}
 			
 		});
@@ -97,7 +103,7 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 
 			@Override
 			public void handle(ActionEvent event) {
-				MainView.getInstance().setScene(userProfile);
+				MainView.getInstance().setScene(userProfile.getScena());
 			}
 			
 		});
