@@ -87,12 +87,7 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 				String prezimeVlasnika=tfPrezimeVlasnika.getText();
 				Integer sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
 				UserOperator.getInstance().addCC(brojKartice, imeVlasnika, prezimeVlasnika, sigurnosniBroj);
-				userProfile.listCards(userProfile.getCards());
-				FlowPane fp=new FlowPane();
-				userProfile.setFp(fp);
-				userProfile.getFp().getChildren().add(userProfile.getBtnCreditCard());
-				userProfile.getFp().getChildren().addAll(userProfile.getCards());
-				userProfile.getKreditneKartice().setContent(userProfile.getFp());
+				userProfile.CCRefresh();
 				MainView.getInstance().setScene(userProfile.getScena());
 			}
 			
