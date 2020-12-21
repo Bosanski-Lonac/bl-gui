@@ -15,14 +15,11 @@ import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
 import dto.TokenResponseDto;
+import security.TokenInterceptor;
+import utility.BLURL;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class UserOperator {
-	private static final String URL = "http://localhost:36250/api";
-	private static final String KORISNIK_URL = "/korisnik";
-	private static final String ADMIN_URL = "/admin";
-	private static final String CC_URL = "/cc";
-	
 	private static UserOperator instance = null;
 	
 	private KorisnikDto korisnikDto;
@@ -46,7 +43,7 @@ public class UserOperator {
 		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikCreateDto);
         //when
         ResponseEntity<TokenResponseDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL, HttpMethod.POST, request, TokenResponseDto.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL, HttpMethod.POST, request, TokenResponseDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.CREATED)) {
         	korisnikDto = response.getBody().getKorisnikDto();
@@ -67,7 +64,7 @@ public class UserOperator {
 		HttpEntity<TokenRequestDto> requestLogin = new HttpEntity<>(tokenRequest);
 		//when
 		ResponseEntity<TokenResponseDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/login", HttpMethod.POST, requestLogin, TokenResponseDto.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/login", HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody().getKorisnikDto();
@@ -88,7 +85,7 @@ public class UserOperator {
 		HttpEntity<TokenRequestDto> requestLogin = new HttpEntity<>(tokenRequest);
 		//when
 		ResponseEntity<TokenResponseDto> response = restTemplate
-                .exchange(URL + ADMIN_URL, HttpMethod.POST, requestLogin, TokenResponseDto.class);
+                .exchange(BLURL.KS_URL + BLURL.ADMIN_URL, HttpMethod.POST, requestLogin, TokenResponseDto.class);
 		//then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody().getKorisnikDto();
@@ -112,7 +109,7 @@ public class UserOperator {
 		}
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, null, KorisnikDto.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.POST, null, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody();
@@ -127,7 +124,7 @@ public class UserOperator {
 		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikUpdateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.PUT, request, KorisnikDto.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.PUT, request, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody();
@@ -139,7 +136,7 @@ public class UserOperator {
 	
 	public void deleteUser() {
 		ResponseEntity<Void> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.DELETE, null, Void.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString(), HttpMethod.DELETE, null, Void.class);
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			signOut();
 		} else {
@@ -154,7 +151,7 @@ public class UserOperator {
 		HttpEntity<KreditnaKarticaCUDto> request = new HttpEntity<>(kreditnaKarticaCreateDto);
 		//when
 		ResponseEntity<KreditnaKarticaDto> response = restTemplate
-				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
+				.exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString() + BLURL.CC_URL, HttpMethod.POST, request, KreditnaKarticaDto.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
         	return response.getBody();
@@ -165,7 +162,7 @@ public class UserOperator {
 	
 	public KreditnaKarticaPageWrapper displayCC(Integer brojStranice) {
 		ResponseEntity<KreditnaKarticaPageWrapper> response = restTemplate
-				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL + "?bstr=" + brojStranice.toString(), HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
+				.exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString() + BLURL.CC_URL + "?bstr=" + brojStranice.toString(), HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
 		
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			return response.getBody();
@@ -176,7 +173,7 @@ public class UserOperator {
 	
 	public void deleteCC(Long ccId) {
 		ResponseEntity<Void> response = restTemplate
-                .exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL + "/" + ccId.toString(), HttpMethod.DELETE, null, Void.class);
+                .exchange(BLURL.KS_URL + BLURL.KORISNIK_URL + "/" + korisnikDto.getId().toString() + BLURL.CC_URL + "/" + ccId.toString(), HttpMethod.DELETE, null, Void.class);
 		if(!response.getStatusCode().equals(HttpStatus.OK)) {
 			throw new HttpClientErrorException(response.getStatusCode());
 		}

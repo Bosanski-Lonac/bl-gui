@@ -12,7 +12,7 @@ import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
 import dto.TokenResponseDto;
-import model.TokenInterceptor;
+import security.TokenInterceptor;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class Main {

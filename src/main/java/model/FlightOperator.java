@@ -8,13 +8,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import dto.LetCriteriaDto;
+import utility.BLURL;
 import wrapper.LetPageWrapper;
 
 public class FlightOperator {
-	private static final String URL = "http://localhost:26530/api";
-	private static final String LET_URL = "/let";
-	private static final String AVION_URL = "/avion";
-	
 	private static FlightOperator instance = null;
 	
 	private RestTemplate restTemplate;
@@ -33,7 +30,7 @@ public class FlightOperator {
 	public LetPageWrapper getFlights(LetCriteriaDto letCriteriaDto) {
 		//when
 		ResponseEntity<LetPageWrapper> response = restTemplate
-				.exchange(URL + LET_URL + letCriteriaDto.getQuery(), HttpMethod.GET, null, LetPageWrapper.class);
+				.exchange(BLURL.SZL_URL + BLURL.LET_URL + letCriteriaDto.getQuery(), HttpMethod.GET, null, LetPageWrapper.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			return response.getBody();
