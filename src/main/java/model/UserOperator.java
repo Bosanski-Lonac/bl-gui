@@ -163,9 +163,9 @@ public class UserOperator {
         }
 	}
 	
-	public KreditnaKarticaPageWrapper displayCC() {
+	public KreditnaKarticaPageWrapper displayCC(Integer brojStranice) {
 		ResponseEntity<KreditnaKarticaPageWrapper> response = restTemplate
-				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL, HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
+				.exchange(URL + KORISNIK_URL + "/" + korisnikDto.getId().toString() + CC_URL + "?bstr=" + brojStranice.toString(), HttpMethod.GET, null, KreditnaKarticaPageWrapper.class);
 		
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
 			return response.getBody();

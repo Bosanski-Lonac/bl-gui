@@ -86,7 +86,6 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	
 	private HBox bottom;
 	
-	@SuppressWarnings("unused")
 	public ProfileSceneWrapper(Scene glavniEkran) {
 		BorderPane pozadina=new BorderPane();
 		
@@ -166,7 +165,7 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		vbCardExample=new VBox(10, hbBrojKartice, hbVlasnik, hbSigurnosniBroj);
 		
-		KreditnaKarticaPageWrapper kkpw=UserOperator.getInstance().displayCC();
+		KreditnaKarticaPageWrapper kkpw=UserOperator.getInstance().displayCC(0);
 		List<KreditnaKarticaDto> kartice=kkpw.getContent();
 		List<VBox> cards=new ArrayList<>();
 		
