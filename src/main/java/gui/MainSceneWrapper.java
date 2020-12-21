@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -31,8 +32,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import model.FlightOperator;
 import model.UserOperator;
 import wrapper.LetPageWrapper;
@@ -42,11 +46,25 @@ public class MainSceneWrapper extends SceneWrapper {
 	private LetCriteriaDto letCriteriaDto;
 	private LetPageWrapper letPageWrapper;
 	
+	private Label lblLetovi;
+	private Button btnDodajLet;
+	private Button btnObrisiLet;
+	
+	private Label lblAvioni;
+	private Button btnDodajAvion;
+	private Button btnObrisiAvion;
+		
+	private HBox hbOptions;
+	private VBox vbLetovi;
+	private VBox vbAvioni;
+	
 	private TableView<LetDto> letovi;
 	private MenuButton userButton;
 	
 	private MenuItem edit;
 	private MenuItem signOut;
+	
+	private HBox hbAdmin;
 	
 	private StackPane stack;
 	
@@ -98,9 +116,14 @@ public class MainSceneWrapper extends SceneWrapper {
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, signOut);
+			hbAdmin=setAdminOptions();
 		}
 		
-		stack = new StackPane(userButton);
+		if(hbAdmin!=null) {
+			stack = new StackPane(hbAdmin, userButton);
+		}else {
+			stack = new StackPane(userButton);
+		}
 		stack.setAlignment(Pos.CENTER_RIGHT);
 		StackPane.setMargin(userButton, new Insets(0, 10, 0, 0));
 		
@@ -149,6 +172,42 @@ public class MainSceneWrapper extends SceneWrapper {
 		} catch (HttpClientErrorException e) {
 			ExceptionHandler.prikaziGresku(e);
 		}
+	}
+	
+	private HBox setAdminOptions() {
+		lblLetovi=new Label("Letovi");
+		lblLetovi.setTextFill(Color.web("#ffffff"));
+		lblLetovi.setFont(new Font("Arial", 20));
+		lblLetovi.setAlignment(Pos.CENTER);
+		btnDodajLet=new Button("Novi let");
+		btnDodajLet.setTextFill(Color.web("#336699"));
+		btnDodajLet.setPrefHeight(40);
+		btnObrisiLet=new Button("Obriši let");
+		btnObrisiLet.setTextFill(Color.web("#336699"));
+		btnObrisiLet.setPrefHeight(40);
+		
+		lblAvioni=new Label("Avioni");
+		lblAvioni.setTextFill(Color.web("#ffffff"));
+		lblAvioni.setFont(new Font("Arial", 20));
+		lblAvioni.setAlignment(Pos.CENTER);
+		btnDodajAvion=new Button("Novi avion");
+		btnDodajAvion.setTextFill(Color.web("#336699"));
+		btnDodajAvion.setPrefHeight(40);
+		btnObrisiAvion=new Button("Obrisi avion");
+		btnObrisiAvion.setTextFill(Color.web("#336699"));
+		btnObrisiAvion.setPrefHeight(40);
+		
+		vbLetovi=new VBox(10, lblLetovi, btnDodajLet, btnObrisiLet);
+		vbAvioni=new VBox(10, lblAvioni, btnDodajAvion, btnObrisiAvion);
+		
+		Region filler = new Region();
+		filler.setPrefWidth(700);
+		
+		hbOptions=new HBox(10, vbLetovi, vbAvioni, filler);
+		hbOptions.setAlignment(Pos.CENTER);
+		hbOptions.setPadding(new Insets(10, 0, 10, 0));
+		
+		return hbOptions;
 	}
 	
 	private void createAccordion() {
