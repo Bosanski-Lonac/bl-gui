@@ -3,6 +3,8 @@ package gui;
 import org.controlsfx.control.RangeSlider;
 import org.springframework.web.client.HttpClientErrorException;
 
+import controller.ShowFlightFormAction;
+import controller.ShowPlaneFormAction;
 import dto.KorisnikDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
@@ -182,6 +184,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		btnDodajLet=new Button("Novi let");
 		btnDodajLet.setTextFill(Color.web("#336699"));
 		btnDodajLet.setPrefHeight(40);
+		btnDodajLet.setOnAction(new ShowFlightFormAction(this));
 		btnObrisiLet=new Button("Obriši let");
 		btnObrisiLet.setTextFill(Color.web("#336699"));
 		btnObrisiLet.setPrefHeight(40);
@@ -193,6 +196,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		btnDodajAvion=new Button("Novi avion");
 		btnDodajAvion.setTextFill(Color.web("#336699"));
 		btnDodajAvion.setPrefHeight(40);
+		btnDodajAvion.setOnAction(new ShowPlaneFormAction(this));
 		btnObrisiAvion=new Button("Obrisi avion");
 		btnObrisiAvion.setTextFill(Color.web("#336699"));
 		btnObrisiAvion.setPrefHeight(40);
@@ -347,7 +351,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		letovi.getColumns().addAll(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, kapacitet);
 	}
 	
-	private void setTable() {
+	public void setTable() {
 		ObservableList<LetDto> letoviData = FXCollections.observableArrayList(letPageWrapper.getContent());
 
 		letovi.setItems(letoviData);
