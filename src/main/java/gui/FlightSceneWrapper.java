@@ -2,6 +2,8 @@ package gui;
 
 import java.math.BigDecimal;
 
+import org.springframework.web.client.HttpClientErrorException;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -104,7 +106,12 @@ public class FlightSceneWrapper extends SceneWrapper {
 				BigDecimal cena=new BigDecimal(tfCena.getText());
 				Integer milje=Integer.parseInt(tfMilje.getText());
 				FlightOperator.getInstance().addFlight(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, milje);
-				glavniEkran.setTable();
+				try {
+					glavniEkran.setLetPageWrapper(FlightOperator.getInstance().getFlights(glavniEkran.getLetCriteriaDto()));
+					glavniEkran.setTableLetovi();
+				} catch (HttpClientErrorException e) {
+					ExceptionHandler.prikaziGresku(e);
+				}
 				MainView.getInstance().setScene(glavniEkran.getScena());
 			}
 			

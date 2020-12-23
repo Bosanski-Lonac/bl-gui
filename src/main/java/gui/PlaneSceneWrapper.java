@@ -2,6 +2,8 @@ package gui;
 
 import java.math.BigDecimal;
 
+import org.springframework.web.client.HttpClientErrorException;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -57,7 +59,12 @@ public class PlaneSceneWrapper extends SceneWrapper {
 				String naziv=tfNaziv.getText();
 				Integer kapacitet=Integer.parseInt(tfKapacitet.getText());
 				FlightOperator.getInstance().addPlane(naziv, kapacitet);
-				glavniEkran.setTable();
+				try {
+					glavniEkran.setAvionPageWrapper(FlightOperator.getInstance().getPlanes(glavniEkran.getAvionCriteriaDto()));
+					glavniEkran.setTableAvioni();
+				} catch (HttpClientErrorException e) {
+					ExceptionHandler.prikaziGresku(e);
+				}
 				MainView.getInstance().setScene(glavniEkran.getScena());
 			}
 			

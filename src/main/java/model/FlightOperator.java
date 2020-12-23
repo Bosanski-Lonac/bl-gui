@@ -10,11 +10,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import dto.AvionCUDto;
+import dto.AvionCriteriaDto;
 import dto.AvionDto;
 import dto.LetCUDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
 import utility.BLURL;
+import wrapper.AvionPageWrapper;
 import wrapper.LetPageWrapper;
 
 public class FlightOperator {
@@ -59,6 +61,15 @@ public class FlightOperator {
 	public void deleteFlight(Long flightId) {
 		ResponseEntity<Void> response=restTemplate.exchange(BLURL.SZL_URL + "/" + BLURL.LET_URL + "/" + flightId.toString(), HttpMethod.DELETE, null, Void.class);
 		if(!response.getStatusCode().equals(HttpStatus.OK)) {
+			throw new HttpClientErrorException(response.getStatusCode());
+		}
+	}
+	
+	public AvionPageWrapper getPlanes(AvionCriteriaDto avionCriteriaDto) {
+		ResponseEntity<AvionPageWrapper> response=restTemplate.exchange(BLURL.SZL_URL + BLURL.AVION_URL + avionCriteriaDto.getQuery(), HttpMethod.GET, null, AvionPageWrapper.class);
+		if(response.getStatusCode().equals(HttpStatus.OK)) {
+			return response.getBody();
+		}else {
 			throw new HttpClientErrorException(response.getStatusCode());
 		}
 	}
