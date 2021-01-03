@@ -6,7 +6,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import controller.DeleteFlightAction;
 import controller.ShowFlightFormAction;
 import controller.ShowPlaneFormAction;
-import dto.AvionCriteriaDto;
 import dto.AvionDto;
 import dto.KorisnikDto;
 import dto.LetCriteriaDto;
@@ -51,7 +50,6 @@ public class MainSceneWrapper extends SceneWrapper {
 	private KorisnikDto korisnikDto;
 	private LetCriteriaDto letCriteriaDto;
 	private LetPageWrapper letPageWrapper;
-	private AvionCriteriaDto avionCriteriaDto;
 	private AvionPageWrapper avionPageWrapper;
 	
 	private Label lblLetovi;
@@ -100,7 +98,6 @@ public class MainSceneWrapper extends SceneWrapper {
 		
 		korisnikDto = UserOperator.getInstance().getUserInfo(false);
 		letCriteriaDto = new LetCriteriaDto();
-		avionCriteriaDto=new AvionCriteriaDto();
 		
 		signOut = new MenuItem("Odjavi se");
 		signOut.setOnAction(new EventHandler<ActionEvent>() {
@@ -141,7 +138,7 @@ public class MainSceneWrapper extends SceneWrapper {
 				}
 			});
 			editPlanes=new MenuItem("Rukovodi avionima");
-			editPlanes.setOnAction(new EventHandler<ActionEvent>() {
+			/*editPlanes.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
 					try {
@@ -152,7 +149,7 @@ public class MainSceneWrapper extends SceneWrapper {
 						ExceptionHandler.prikaziGresku(e);
 					}
 				}
-			});
+			});*/
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, signOut, editFlights, editPlanes);
 			hbAdmin=setFlightOptions();
 		}
@@ -202,7 +199,6 @@ public class MainSceneWrapper extends SceneWrapper {
 		pozadina.setBottom(bottom);
 		
 		letCriteriaDto.setBrojStranice(0);
-		avionCriteriaDto.setBrojStranice(0);
 		
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
@@ -436,10 +432,6 @@ public class MainSceneWrapper extends SceneWrapper {
 	
 	public LetCriteriaDto getLetCriteriaDto() {
 		return letCriteriaDto;
-	}
-	
-	public AvionCriteriaDto getAvionCriteriaDto() {
-		return avionCriteriaDto;
 	}
 	
 	public void setLetPageWrapper(LetPageWrapper letPageWrapper) {

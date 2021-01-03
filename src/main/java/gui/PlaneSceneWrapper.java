@@ -1,7 +1,5 @@
 package gui;
 
-import java.math.BigDecimal;
-
 import org.springframework.web.client.HttpClientErrorException;
 
 import javafx.event.ActionEvent;
@@ -60,7 +58,7 @@ public class PlaneSceneWrapper extends SceneWrapper {
 				Integer kapacitet=Integer.parseInt(tfKapacitet.getText());
 				FlightOperator.getInstance().addPlane(naziv, kapacitet);
 				try {
-					glavniEkran.setAvionPageWrapper(FlightOperator.getInstance().getPlanes(glavniEkran.getAvionCriteriaDto()));
+					//glavniEkran.setAvionPageWrapper(FlightOperator.getInstance().getPlanes(glavniEkran.getAvionCriteriaDto()));
 					glavniEkran.setTableAvioni();
 				} catch (HttpClientErrorException e) {
 					ExceptionHandler.prikaziGresku(e);
