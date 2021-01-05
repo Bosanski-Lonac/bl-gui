@@ -40,14 +40,6 @@ public class FlightOperator {
 				.exchange(BLURL.getGatewayFlightQueryURL(letCriteriaDto.getQuery()), HttpMethod.GET, null, LetPageWrapper.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
-			for(LetDto letDto : response.getBody().getContent()) {
-				try {
-					Long reservedSlots = TicketOperator.getInstance().getReservedSlots(letDto.getId());
-					//letDto.getAvion().set
-				} catch(HttpClientErrorException e) {
-					
-				}
-			}
 			return response.getBody();
 		} else {
 			throw new HttpClientErrorException(response.getStatusCode());

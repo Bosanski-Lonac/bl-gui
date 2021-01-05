@@ -4,6 +4,7 @@ import org.controlsfx.control.RangeSlider;
 import org.springframework.web.client.HttpClientErrorException;
 
 import controller.DeleteFlightAction;
+import controller.ReserveAction;
 import dto.KorisnikDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
@@ -116,7 +117,7 @@ public class MainSceneWrapper extends SceneWrapper {
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);
 			
 			btnReserve = new Button("Rezerviši");
-			// Otvori dijalog za selekciju kreditne kartice
+			btnReserve.setOnAction(new ReserveAction(this));
 			bottom = new HBox(applyFilter, btnReserve);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
 			editPlanes=new MenuItem("Rukovođstvo");
@@ -292,11 +293,14 @@ public class MainSceneWrapper extends SceneWrapper {
 		TableColumn<LetDto, String> krajnjaDestinacija = new TableColumn<>("Krajnja destinacija");
 		krajnjaDestinacija.setCellValueFactory(new PropertyValueFactory<LetDto, String>("krajnjaDestinacija"));
 		
-		TableColumn<LetDto, Integer> duzina = new TableColumn<>("Duzina");
+		TableColumn<LetDto, Integer> duzina = new TableColumn<>("Trajanje");
 		duzina.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("duzina"));
 		
 		TableColumn<LetDto, Integer> cena = new TableColumn<>("Cena");
 		cena.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("cena"));
+		
+		TableColumn<LetDto, Integer> milje = new TableColumn<>("Daljina");
+		milje.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("milje"));
 		
 		TableColumn<LetDto, Integer> kapacitet = new TableColumn<>("Kapacitet");
 		kapacitet.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("kapacitet"));
@@ -305,6 +309,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		letovi.getColumns().add(krajnjaDestinacija);
 		letovi.getColumns().add(duzina);
 		letovi.getColumns().add(cena);
+		letovi.getColumns().add(milje);
 		letovi.getColumns().add(kapacitet);
 	}
 	

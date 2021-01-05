@@ -44,16 +44,6 @@ public class TicketOperator {
 		}
 	}
 	
-	public Long getReservedSlots(Long letId) {
-		ResponseEntity<Long> response = restTemplate
-				.exchange(BLURL.getGatewayReservedSlotsURL(letId), HttpMethod.GET, null, Long.class);
-		if(response.getStatusCode().equals(HttpStatus.OK)) {
-			return response.getBody();
-		}else {
-			throw new HttpClientErrorException(response.getStatusCode());
-		}
-	}
-	
 	public static TicketOperator getInstance() {
 		if(instance == null) {
 			instance = new TicketOperator();
