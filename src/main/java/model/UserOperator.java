@@ -49,7 +49,6 @@ public class UserOperator {
         	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
-        	FlightOperator.getInstance().setRestTemplate(restTemplate);
         	return korisnikDto;
         } else {
         	throw new HttpClientErrorException(response.getStatusCode());
@@ -70,7 +69,6 @@ public class UserOperator {
         	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
-        	FlightOperator.getInstance().setRestTemplate(restTemplate);
         	return korisnikDto;
         } else {
         	throw new HttpClientErrorException(response.getStatusCode());
@@ -91,7 +89,6 @@ public class UserOperator {
         	korisnikDto = response.getBody().getKorisnikDto();
         	TokenInterceptor tokenInterceptor = new TokenInterceptor(response.getBody().getToken());
         	restTemplate.setInterceptors(Collections.singletonList(tokenInterceptor));
-        	FlightOperator.getInstance().setRestTemplate(restTemplate);
         	return korisnikDto;
         } else {
         	throw new HttpClientErrorException(response.getStatusCode());

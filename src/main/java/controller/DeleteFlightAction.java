@@ -23,6 +23,7 @@ public class DeleteFlightAction implements EventHandler<ActionEvent> {
 		LetDto odabran=letovi.getSelectionModel().getSelectedItem();
 		try {
 			FlightOperator.getInstance().deleteFlight(odabran.getId());
+			msw.setTableLetovi(-2);
 		} catch (HttpClientErrorException e) {
 			ExceptionHandler.prikaziGresku(e);
 		}

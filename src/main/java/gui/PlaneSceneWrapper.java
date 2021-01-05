@@ -106,7 +106,7 @@ public class PlaneSceneWrapper extends SceneWrapper {
 		btnDodajLet = new Button("Novi let za avion");
 		btnDodajLet.setOnAction(new ShowFlightFormAction(this));
 		btnDodajAvion = new Button("Dodaj avion");
-		btnDodajAvion.setOnAction(new ShowPlaneFormAction());
+		btnDodajAvion.setOnAction(new ShowPlaneFormAction(this));
 		btnObrisiAvion = new Button("Obriši avion");
 		btnObrisiAvion.setOnAction(new DeletePlaneAction(this));
 		
@@ -139,6 +139,11 @@ public class PlaneSceneWrapper extends SceneWrapper {
 	}
 	
 	public void setTableAvioni(int page) {
+		if(avioni.getItems().size() < 2 && page == -2 && pagination.getCurrentPageIndex() > 1) {
+			page = pagination.getCurrentPageIndex() - 1;
+		} else if(page < 0) {
+			page = pagination.getCurrentPageIndex();
+		}
 		try {
 			avionPageWrapper = FlightOperator.getInstance().getPlanes(page);
 		} catch (HttpClientErrorException e) {

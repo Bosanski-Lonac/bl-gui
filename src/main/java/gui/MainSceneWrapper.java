@@ -309,6 +309,11 @@ public class MainSceneWrapper extends SceneWrapper {
 	}
 	
 	public void setTableLetovi(int page) {
+		if(letovi.getItems().size() < 2 && page == -2 && pagination.getCurrentPageIndex() > 1) {
+			page = pagination.getCurrentPageIndex() - 1;
+		} else if(page < 0) {
+			page = pagination.getCurrentPageIndex();
+		}
 		letCriteriaDto.setBrojStranice(page);
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);

@@ -3,6 +3,8 @@ package gui;
 import org.springframework.web.client.RestTemplate;
 
 import javafx.stage.Stage;
+import model.FlightOperator;
+import model.TicketOperator;
 import model.UserOperator;
 
 public class MainView extends Stage {
@@ -10,6 +12,8 @@ public class MainView extends Stage {
 	
 	private MainView() {
 		UserOperator.getInstance().setRestTemplate(new RestTemplate());
+		FlightOperator.getInstance().setRestTemplate(UserOperator.getInstance().getRestTemplate());
+		TicketOperator.getInstance().setRestTemplate(UserOperator.getInstance().getRestTemplate());
 		
 		setScene(new LoginSceneWrapper().getScena());
 		setWidth(1024);

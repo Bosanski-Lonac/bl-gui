@@ -1,6 +1,9 @@
 package controller;
 
+import java.util.Optional;
+
 import dto.AvionDto;
+import dto.LetDto;
 import gui.LetDialog;
 import gui.PlaneSceneWrapper;
 import javafx.event.ActionEvent;
@@ -17,7 +20,10 @@ public class ShowFlightFormAction implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent event) {
 		AvionDto odabran=psw.getAvioni().getSelectionModel().getSelectedItem();
 		LetDialog dialog=new LetDialog(odabran);
-		dialog.showAndWait();
+		Optional<LetDto> result = dialog.showAndWait();
+		if(result.isPresent()) {
+			psw.setTableAvioni(-1);
+		}
 	}
 
 }
