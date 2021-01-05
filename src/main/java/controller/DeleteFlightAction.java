@@ -1,8 +1,9 @@
 package controller;
 
-import java.util.List;
+import org.springframework.web.client.HttpClientErrorException;
 
 import dto.LetDto;
+import gui.ExceptionHandler;
 import gui.MainSceneWrapper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,9 +20,11 @@ public class DeleteFlightAction implements EventHandler<ActionEvent> {
 	@Override
 	public void handle(ActionEvent event) {
 		TableView<LetDto> letovi=msw.getLetovi();
-		List<LetDto> odabrani=letovi.getSelectionModel().getSelectedItems();
-		for (LetDto letDto : odabrani) {
-			FlightOperator.getInstance().deleteFlight(letDto.getId());
+		LetDto odabran=letovi.getSelectionModel().getSelectedItem();
+		try {
+			FlightOperator.getInstance().deleteFlight(odabran.getId());
+		} catch (HttpClientErrorException e) {
+			ExceptionHandler.prikaziGresku(e);
 		}
 	}
 }

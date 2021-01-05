@@ -46,8 +46,8 @@ public class FlightOperator {
 		}
 	}
 	
-	public LetDto addFlight(String pocetnaDestinacija, String krajnjaDestinacija, Integer duzina, BigDecimal cena, Integer milje) {
-		LetCUDto letCreateDto=new LetCUDto(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, milje);
+	public LetDto addLet(String pocetnaDestinacija, String krajnjaDestinacija, Integer duzina, BigDecimal cena, Integer milje, AvionDto avionDto) {
+		LetCUDto letCreateDto=new LetCUDto(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, milje, avionDto.getId());
 		HttpEntity<LetCUDto> request=new HttpEntity<>(letCreateDto);
 		ResponseEntity<LetDto> response=restTemplate.exchange(BLURL.getGatewayFlightCreateURL(), HttpMethod.POST, request, LetDto.class);
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {

@@ -2,14 +2,14 @@ package gui;
 
 import java.math.BigDecimal;
 
-import org.springframework.web.client.HttpClientErrorException;
-
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import controller.DodajLetAction;
+import dto.AvionDto;
+import dto.LetDto;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
@@ -22,9 +22,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import model.FlightOperator;
 
-public class FlightSceneWrapper extends SceneWrapper {
+public class LetDialog extends Dialog<LetDto> {
 	private Label lblPocetnaDestinacija;
 	private Label lblKrajnjaDestinacija;
 	private Label lblDuzina;
@@ -33,9 +32,9 @@ public class FlightSceneWrapper extends SceneWrapper {
 	
 	private TextField tfPocetnaDestinacija;
 	private TextField tfKrajnjaDestinacija;
-	private TextField tfDuzina;
+	private UnsignedIntegerField tfDuzina;
 	private TextField tfCena;
-	private TextField tfMilje;
+	private UnsignedIntegerField tfMilje;
 	
 	private HBox hbPocetnaDestinacija;
 	private HBox hbKrajnjaDestinacija;
@@ -48,12 +47,9 @@ public class FlightSceneWrapper extends SceneWrapper {
 	
 	private VBox vbLet;
 	
-	private Button btnDodaj;
-	private Button btnCancel;
-	
-	private HBox hbBottom;
-	
-	public FlightSceneWrapper(MainSceneWrapper glavniEkran) {
+	public LetDialog(AvionDto avionDto) {
+		super();
+		
 		BorderPane pozadina=new BorderPane();
 		
 		lblPocetnaDestinacija=new Label("Početna destinacija: ");
@@ -64,9 +60,9 @@ public class FlightSceneWrapper extends SceneWrapper {
 		
 		tfPocetnaDestinacija=new TextField();
 		tfKrajnjaDestinacija=new TextField();
-		tfDuzina=new TextField();
-		tfCena=new TextField();
-		tfMilje=new TextField();
+		tfDuzina=new UnsignedIntegerField();
+		tfCena=new UnsignedIntegerField();
+		tfMilje=new UnsignedIntegerField();
 		
 		hbPocetnaDestinacija=new HBox(10, lblPocetnaDestinacija, tfPocetnaDestinacija);
 		hbPocetnaDestinacija.setAlignment(Pos.CENTER);
@@ -95,42 +91,32 @@ public class FlightSceneWrapper extends SceneWrapper {
 		
 		pozadina.setCenter(center);
 		
-		btnDodaj=new Button("Dodaj");
-		btnDodaj.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				String pocetnaDestinacija=tfPocetnaDestinacija.getText();
-				String krajnjaDestinacija=tfKrajnjaDestinacija.getText();
-				Integer duzina=Integer.parseInt(tfDuzina.getText());
-				BigDecimal cena=new BigDecimal(tfCena.getText());
-				Integer milje=Integer.parseInt(tfMilje.getText());
-				FlightOperator.getInstance().addFlight(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, milje);
-				try {
-					glavniEkran.setLetPageWrapper(FlightOperator.getInstance().getFlights(glavniEkran.getLetCriteriaDto()));
-					glavniEkran.setTableLetovi();
-				} catch (HttpClientErrorException e) {
-					ExceptionHandler.prikaziGresku(e);
-				}
-				MainView.getInstance().setScene(glavniEkran.getScena());
-			}
-			
-		});
-		btnCancel=new Button("Poništi");
-		btnCancel.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				MainView.getInstance().setScene(glavniEkran.getScena());
-			}
-			
-		});
+		this.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+		((Button)this.getDialogPane().lookupButton(ButtonType.OK)).setOnAction(new DodajLetAction(this, avionDto));
 		
-		hbBottom=new HBox(10, btnDodaj, btnCancel);
-		hbBottom.setAlignment(Pos.CENTER);
-		
-		pozadina.setBottom(hbBottom);
-		
-		this.scena=new Scene(pozadina);
+		getDialogPane().setContent(pozadina);
+		getDialogPane().setPrefWidth(400);
+		getDialogPane().setPrefHeight(600);
+		setTitle("Dodaj Let");
+	}
+	
+	public String getPocetnaDestinacija() {
+		return tfPocetnaDestinacija.getText();
+	}
+	
+	public String getKrajnjaDestinacija() {
+		return tfKrajnjaDestinacija.getText();
+	}
+	
+	public Integer getDuzina() {
+		return Integer.parseUnsignedInt(tfDuzina.getText());
+	}
+	
+	public BigDecimal getCena() {
+		return new BigDecimal(tfCena.getText());
+	}
+	
+	public Integer getMilje() {
+		return Integer.parseUnsignedInt(tfMilje.getText());
 	}
 }

@@ -4,9 +4,6 @@ import org.controlsfx.control.RangeSlider;
 import org.springframework.web.client.HttpClientErrorException;
 
 import controller.DeleteFlightAction;
-import controller.ShowFlightFormAction;
-import controller.ShowPlaneFormAction;
-import dto.AvionDto;
 import dto.KorisnikDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
@@ -23,9 +20,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -36,44 +33,22 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import model.FlightOperator;
 import model.UserOperator;
-import wrapper.AvionPageWrapper;
 import wrapper.LetPageWrapper;
 
 public class MainSceneWrapper extends SceneWrapper {
 	private KorisnikDto korisnikDto;
 	private LetCriteriaDto letCriteriaDto;
 	private LetPageWrapper letPageWrapper;
-	private AvionPageWrapper avionPageWrapper;
 	
-	private Label lblLetovi;
-	private Button btnDodajLet;
-	private Button btnObrisiLet;
-	
-	private Label lblAvioni;
-	private Button btnDodajAvion;
-	private Button btnObrisiAvion;
-		
-	private HBox hbOptions;
-	private VBox vbLetovi;
-	private VBox vbAvioni;
-	
-	private TableView<LetDto> letovi;
-	private TableView<AvionDto> avioni;
 	private MenuButton userButton;
 	
-	private MenuItem editFlights;
 	private MenuItem editPlanes;
 	private MenuItem edit;
 	private MenuItem signOut;
-	
-	private HBox hbAdmin;
 	
 	private StackPane stack;
 	
@@ -88,9 +63,15 @@ public class MainSceneWrapper extends SceneWrapper {
 	
 	private Accordion accordion;
 	
+	private Pagination pagination;
+	private TableView<LetDto> letovi;
+	
+	private Button btnObrisiLet;
 	private Button applyFilter;
+	private Button btnReserve;
 	
 	private HBox top;
+	private VBox center;
 	private HBox bottom;
 	
 	public MainSceneWrapper() {
@@ -114,6 +95,16 @@ public class MainSceneWrapper extends SceneWrapper {
 		imageView.setFitHeight(24);
 		imageView.setFitWidth(24);
 		
+		applyFilter = new Button("Primeni filtere");
+		applyFilter.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				setTableLetovi(0);
+			}
+			
+		});
+		
 		if(korisnikDto.getRole() == Role.ROLE_USER) {
 			edit = new MenuItem("Izmeni profil");
 			edit.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,42 +114,26 @@ public class MainSceneWrapper extends SceneWrapper {
 				}
 			});
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);
+			
+			btnReserve = new Button("Rezerviši");
+			// Otvori dijalog za selekciju kreditne kartice
+			bottom = new HBox(applyFilter, btnReserve);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
-			editFlights=new MenuItem("Rukovodi letovima");
-			editFlights.setOnAction(new EventHandler<ActionEvent>() {
+			editPlanes=new MenuItem("Rukovođstvo");
+			editPlanes.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					try {
-						letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
-						setTableLetovi();
-						hbAdmin=setFlightOptions();
-					} catch (HttpClientErrorException e) {
-						ExceptionHandler.prikaziGresku(e);
-					}
+					MainView.getInstance().setScene(new PlaneSceneWrapper(scena).getScena());
 				}
 			});
-			editPlanes=new MenuItem("Rukovodi avionima");
-			/*editPlanes.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					try {
-						avionPageWrapper = FlightOperator.getInstance().getPlanes(avionCriteriaDto);
-						setTableAvioni();
-						hbAdmin=setPlaneOptions();
-					} catch (HttpClientErrorException e) {
-						ExceptionHandler.prikaziGresku(e);
-					}
-				}
-			});*/
-			userButton = new MenuButton(korisnikDto.getUsername(), imageView, signOut, editFlights, editPlanes);
-			hbAdmin=setFlightOptions();
+			userButton = new MenuButton(korisnikDto.getUsername(), imageView, editPlanes, signOut);
+			
+			btnObrisiLet=new Button("Obriši let");
+			btnObrisiLet.setOnAction(new DeleteFlightAction(this));
+			bottom = new HBox(applyFilter, btnObrisiLet);
 		}
 		
-		if(hbAdmin!=null) {
-			stack = new StackPane(hbAdmin, userButton);
-		}else {
-			stack = new StackPane(userButton);
-		}
+		stack = new StackPane(userButton);
 		stack.setAlignment(Pos.CENTER_RIGHT);
 		StackPane.setMargin(userButton, new Insets(0, 10, 0, 0));
 		
@@ -169,96 +144,26 @@ public class MainSceneWrapper extends SceneWrapper {
 		HBox.setHgrow(stack, Priority.ALWAYS);
 		
 		createTableLetovi();
-		createTableAvioni();
+		pagination = new Pagination();
+		pagination.setStyle("-fx-page-information-visible: false;");
+		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setTableLetovi(newIndex.intValue()));
+		
+		center = new VBox(pagination, letovi);
 		
 		createAccordion();
 		
-		applyFilter = new Button("Primeni filtere");
-		applyFilter.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				letCriteriaDto.setBrojStranice(0);
-				try {
-					letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
-					setTableLetovi();
-				} catch (HttpClientErrorException e) {
-					ExceptionHandler.prikaziGresku(e);
-				}
-			}
-			
-		});
-		bottom = new HBox(applyFilter);
 		bottom.setPadding(new Insets(15, 12, 15, 12));
 		bottom.setAlignment(Pos.CENTER);
 		bottom.setSpacing(10);
 		
 		pozadina.setTop(top);
-		pozadina.setCenter(letovi);
+		pozadina.setCenter(center);
 		pozadina.setLeft(accordion);
 		pozadina.setBottom(bottom);
 		
-		letCriteriaDto.setBrojStranice(0);
-		
-		try {
-			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
-			setTableLetovi();
-		} catch (HttpClientErrorException e) {
-			ExceptionHandler.prikaziGresku(e);
-		}
+		setTableLetovi(0);
 		
 		this.scena=new Scene(pozadina);
-	}
-	
-	private HBox setFlightOptions() {
-		lblLetovi=new Label("Letovi");
-		lblLetovi.setTextFill(Color.web("#ffffff"));
-		lblLetovi.setFont(new Font("Arial", 20));
-		lblLetovi.setAlignment(Pos.CENTER);
-		btnDodajLet=new Button("Novi let");
-		btnDodajLet.setTextFill(Color.web("#336699"));
-		btnDodajLet.setPrefHeight(40);
-		btnDodajLet.setOnAction(new ShowFlightFormAction(this));
-		btnObrisiLet=new Button("Obriši let");
-		btnObrisiLet.setTextFill(Color.web("#336699"));
-		btnObrisiLet.setPrefHeight(40);
-		btnObrisiLet.setOnAction(new DeleteFlightAction(this));
-		
-		vbLetovi=new VBox(10, lblLetovi, btnDodajLet, btnObrisiLet);
-		
-		Region filler = new Region();
-		filler.setPrefWidth(700);
-		
-		hbOptions=new HBox(10, vbLetovi, filler);
-		hbOptions.setAlignment(Pos.CENTER);
-		hbOptions.setPadding(new Insets(10, 0, 10, 0));
-		
-		return hbOptions;
-	}
-	
-	private HBox setPlaneOptions() {
-		lblAvioni=new Label("Avioni");
-		lblAvioni.setTextFill(Color.web("#ffffff"));
-		lblAvioni.setFont(new Font("Arial", 20));
-		lblAvioni.setAlignment(Pos.CENTER);
-		btnDodajAvion=new Button("Novi avion");
-		btnDodajAvion.setTextFill(Color.web("#336699"));
-		btnDodajAvion.setPrefHeight(40);
-		btnDodajAvion.setOnAction(new ShowPlaneFormAction(this));
-		btnObrisiAvion=new Button("Obrisi avion");
-		btnObrisiAvion.setTextFill(Color.web("#336699"));
-		btnObrisiAvion.setPrefHeight(40);
-		
-		vbAvioni=new VBox(10, lblAvioni, btnDodajAvion, btnObrisiAvion);
-		
-		Region filler = new Region();
-		filler.setPrefWidth(700);
-		
-		hbOptions=new HBox(10, vbAvioni, filler);
-		hbOptions.setAlignment(Pos.CENTER);
-		hbOptions.setPadding(new Insets(10, 0, 10, 0));
-		
-		return hbOptions;
 	}
 	
 	private void createAccordion() {
@@ -379,6 +284,7 @@ public class MainSceneWrapper extends SceneWrapper {
 	
 	private void createTableLetovi() {
 		letovi = new TableView<>();
+		VBox.setVgrow(letovi, Priority.ALWAYS);
 		
 		TableColumn<LetDto, String> pocetnaDestinacija = new TableColumn<>("Pocetna destinacija");
 		pocetnaDestinacija.setCellValueFactory(new PropertyValueFactory<LetDto, String>("pocetnaDestinacija"));
@@ -395,50 +301,27 @@ public class MainSceneWrapper extends SceneWrapper {
 		TableColumn<LetDto, Integer> kapacitet = new TableColumn<>("Kapacitet");
 		kapacitet.setCellValueFactory(new PropertyValueFactory<LetDto, Integer>("kapacitet"));
 		
-		letovi.getColumns().addAll(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, kapacitet);
+		letovi.getColumns().add(pocetnaDestinacija);
+		letovi.getColumns().add(krajnjaDestinacija);
+		letovi.getColumns().add(duzina);
+		letovi.getColumns().add(cena);
+		letovi.getColumns().add(kapacitet);
 	}
 	
-	private void createTableAvioni() {
-		avioni=new TableView<>();
-		
-		TableColumn<AvionDto, String> naziv=new TableColumn<>("Naziv");
-		naziv.setCellValueFactory(new PropertyValueFactory<AvionDto, String>("naziv"));
-		
-		TableColumn<AvionDto, Integer> kapacitet=new TableColumn<>("Kapacitet");
-		kapacitet.setCellValueFactory(new PropertyValueFactory<AvionDto, Integer>("kapacitet"));
-		
-		avioni.getColumns().addAll(naziv, kapacitet);
-	}
-	
-	public void setTableLetovi() {
+	public void setTableLetovi(int page) {
+		letCriteriaDto.setBrojStranice(page);
+		try {
+			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
+		} catch (HttpClientErrorException e) {
+			ExceptionHandler.prikaziGresku(e);
+			return;
+		}
 		ObservableList<LetDto> letoviData = FXCollections.observableArrayList(letPageWrapper.getContent());
-
 		letovi.setItems(letoviData);
-	}
-	
-	public void setTableAvioni() {
-		ObservableList<AvionDto> avioniData=FXCollections.observableArrayList(avionPageWrapper.getContent());
-		
-		avioni.setItems(avioniData);
+		pagination.setPageCount(letPageWrapper.getTotalPages());
 	}
 	
 	public TableView<LetDto> getLetovi(){
 		return letovi;
-	}
-	
-	public TableView<AvionDto> getAvioni(){
-		return avioni;
-	}
-	
-	public LetCriteriaDto getLetCriteriaDto() {
-		return letCriteriaDto;
-	}
-	
-	public void setLetPageWrapper(LetPageWrapper letPageWrapper) {
-		this.letPageWrapper=letPageWrapper;
-	}
-	
-	public void setAvionPageWrapper(AvionPageWrapper avionPageWrapper) {
-		this.avionPageWrapper=avionPageWrapper;
 	}
 }

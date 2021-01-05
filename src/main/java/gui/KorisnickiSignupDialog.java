@@ -63,7 +63,7 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		getDialogPane().setContent(pozadina);
 		getDialogPane().setPrefWidth(400);
 		getDialogPane().setPrefHeight(600);
-		setTitle("Korisnicki sign up");
+		setTitle("Korisnicka Registracija");
 	}
 	
 	public String getEmail() {

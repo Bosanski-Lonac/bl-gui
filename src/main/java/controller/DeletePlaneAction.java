@@ -1,27 +1,30 @@
 package controller;
 
-import java.util.List;
+import org.springframework.web.client.HttpClientErrorException;
 
 import dto.AvionDto;
-import gui.MainSceneWrapper;
+import gui.ExceptionHandler;
+import gui.PlaneSceneWrapper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 import model.FlightOperator;
 
 public class DeletePlaneAction implements EventHandler<ActionEvent> {
-	private MainSceneWrapper msw;
+	private PlaneSceneWrapper psw;
 	
-	public DeletePlaneAction(MainSceneWrapper msw) {
-		this.msw=msw;
+	public DeletePlaneAction(PlaneSceneWrapper psw) {
+		this.psw=psw;
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
-		TableView<AvionDto> avioni=msw.getAvioni();
-		List<AvionDto> odabrani=avioni.getSelectionModel().getSelectedItems();
-		for (AvionDto avionDto : odabrani) {
-			FlightOperator.getInstance().deletePlane(avionDto.getId());
+		TableView<AvionDto> avioni = psw.getAvioni();
+		AvionDto odabran=avioni.getSelectionModel().getSelectedItem();
+		try {
+			FlightOperator.getInstance().deletePlane(odabran.getId());
+		} catch (HttpClientErrorException e) {
+			ExceptionHandler.prikaziGresku(e);
 		}
 	}
 }

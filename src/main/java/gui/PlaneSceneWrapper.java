@@ -2,86 +2,155 @@ package gui;
 
 import org.springframework.web.client.HttpClientErrorException;
 
+import controller.DeletePlaneAction;
+import controller.ShowFlightFormAction;
+import controller.ShowPlaneFormAction;
+import dto.AvionDto;
+import dto.KorisnikDto;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import model.FlightOperator;
+import model.UserOperator;
+import wrapper.AvionPageWrapper;
 
 public class PlaneSceneWrapper extends SceneWrapper {
-	private Label lblNaziv;
-	private Label lblKapacitet;
+	private KorisnikDto korisnikDto;
+	private AvionPageWrapper avionPageWrapper;
 	
-	private TextField tfNaziv;
-	private TextField tfKapacitet;
+	private MenuButton userButton;
 	
-	private HBox hbNaziv;
-	private HBox hbKapacitet;
+	private MenuItem defaultView;
+	private MenuItem signOut;
 	
-	private HBox hbAvion;
+	private StackPane stack;
 	
-	private Button btnDodaj;
-	private Button btnCancel;
+	private Pagination pagination;
+	private TableView<AvionDto> avioni;
 	
-	private HBox hbBottom;
+	private Button btnDodajLet;
+	private Button btnDodajAvion;
+	private Button btnObrisiAvion;
 	
-	public PlaneSceneWrapper(MainSceneWrapper glavniEkran) {
+	private HBox top;
+	private VBox center;
+	private HBox bottom;
+	
+	public PlaneSceneWrapper(Scene scena) {
 		BorderPane pozadina=new BorderPane();
 		
-		lblNaziv=new Label("Naziv aviona: ");
-		lblKapacitet=new Label("Kapacitet aviona: ");
+		korisnikDto = UserOperator.getInstance().getUserInfo(false);
 		
-		tfNaziv=new TextField();
-		tfKapacitet=new TextField();
-		
-		hbNaziv=new HBox(10, lblNaziv, tfNaziv);
-		hbNaziv.setAlignment(Pos.CENTER);
-		hbKapacitet=new HBox(10, lblKapacitet, tfKapacitet);
-		hbKapacitet.setAlignment(Pos.CENTER);
-		
-		hbAvion=new HBox(10, hbNaziv, hbKapacitet);
-		hbAvion.setAlignment(Pos.CENTER);
-		
-		pozadina.setCenter(hbAvion);
-		
-		btnDodaj=new Button("Dodaj");
-		btnDodaj.setOnAction(new EventHandler<ActionEvent>() {
+		defaultView = new MenuItem("Glavna");
+		defaultView.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				String naziv=tfNaziv.getText();
-				Integer kapacitet=Integer.parseInt(tfKapacitet.getText());
-				FlightOperator.getInstance().addPlane(naziv, kapacitet);
-				try {
-					//glavniEkran.setAvionPageWrapper(FlightOperator.getInstance().getPlanes(glavniEkran.getAvionCriteriaDto()));
-					glavniEkran.setTableAvioni();
-				} catch (HttpClientErrorException e) {
-					ExceptionHandler.prikaziGresku(e);
-				}
-				MainView.getInstance().setScene(glavniEkran.getScena());
-			}
-			
-		});
-		btnCancel=new Button("Poništi");
-		btnCancel.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				MainView.getInstance().setScene(glavniEkran.getScena());
+				MainView.getInstance().setScene(scena);
 			}
 			
 		});
 		
-		hbBottom=new HBox(10, btnDodaj, btnCancel);
-		hbBottom.setAlignment(Pos.CENTER);
+		signOut = new MenuItem("Odjavi se");
+		signOut.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				UserOperator.getInstance().signOut();
+				MainView.getInstance().setScene(new LoginSceneWrapper().getScena());
+			}
+		});
 		
-		pozadina.setBottom(hbBottom);
+		Image image = new Image("ikonice/profile.png");
+		ImageView imageView = new ImageView(image);
+		
+		imageView.setFitHeight(24);
+		imageView.setFitWidth(24);
+		
+		userButton = new MenuButton(korisnikDto.getUsername(), imageView, defaultView, signOut);
+		
+		stack = new StackPane(userButton);
+		stack.setAlignment(Pos.CENTER_RIGHT);
+		StackPane.setMargin(userButton, new Insets(0, 10, 0, 0));
+		
+		top = new HBox(stack);
+		top.setPadding(new Insets(15, 12, 15, 12));
+		top.setSpacing(10);
+		top.setStyle("-fx-background-color: #336699;");
+		HBox.setHgrow(stack, Priority.ALWAYS);
+		
+		createTableAvioni();
+		pagination = new Pagination();
+		pagination.setStyle("-fx-page-information-visible: false;");
+		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setTableAvioni(newIndex.intValue()));
+		
+		center = new VBox(pagination, avioni);
+		
+		btnDodajLet = new Button("Novi let za avion");
+		btnDodajLet.setOnAction(new ShowFlightFormAction(this));
+		btnDodajAvion = new Button("Dodaj avion");
+		btnDodajAvion.setOnAction(new ShowPlaneFormAction());
+		btnObrisiAvion = new Button("Obriši avion");
+		btnObrisiAvion.setOnAction(new DeletePlaneAction(this));
+		
+		bottom = new HBox(btnDodajLet, btnDodajAvion, btnObrisiAvion);
+		bottom.setPadding(new Insets(15, 12, 15, 12));
+		bottom.setAlignment(Pos.CENTER);
+		bottom.setSpacing(10);
+		
+		pozadina.setTop(top);
+		pozadina.setCenter(center);
+		pozadina.setBottom(bottom);
+		
+		setTableAvioni(0);
 		
 		this.scena=new Scene(pozadina);
+	}
+	
+	private void createTableAvioni() {
+		avioni=new TableView<>();
+		VBox.setVgrow(avioni, Priority.ALWAYS);
+		
+		TableColumn<AvionDto, String> naziv=new TableColumn<>("Naziv");
+		naziv.setCellValueFactory(new PropertyValueFactory<AvionDto, String>("naziv"));
+		
+		TableColumn<AvionDto, Integer> kapacitet=new TableColumn<>("Kapacitet Putnika");
+		kapacitet.setCellValueFactory(new PropertyValueFactory<AvionDto, Integer>("kapacitetPutnika"));
+		
+		avioni.getColumns().add(naziv);
+		avioni.getColumns().add(kapacitet);
+	}
+	
+	public void setTableAvioni(int page) {
+		try {
+			avionPageWrapper = FlightOperator.getInstance().getPlanes(page);
+		} catch (HttpClientErrorException e) {
+			ExceptionHandler.prikaziGresku(e);
+			return;
+		}
+		ObservableList<AvionDto> avioniData=FXCollections.observableArrayList(avionPageWrapper.getContent());
+		avioni.setItems(avioniData);
+		pagination.setPageCount(avionPageWrapper.getTotalPages());
+	}
+	
+	public TableView<AvionDto> getAvioni() {
+		return avioni;
 	}
 }

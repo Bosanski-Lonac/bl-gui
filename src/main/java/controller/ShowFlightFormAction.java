@@ -1,22 +1,23 @@
 package controller;
 
-import gui.FlightSceneWrapper;
-import gui.MainSceneWrapper;
-import gui.MainView;
+import dto.AvionDto;
+import gui.LetDialog;
+import gui.PlaneSceneWrapper;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 public class ShowFlightFormAction implements EventHandler<ActionEvent> {
-	private MainSceneWrapper msw;
+	private PlaneSceneWrapper psw;
 	
-	public ShowFlightFormAction(MainSceneWrapper msw) {
-		this.msw=msw;
+	public ShowFlightFormAction(PlaneSceneWrapper psw) {
+		this.psw=psw;
 	}
 
 	@Override
 	public void handle(ActionEvent event) {
-		FlightSceneWrapper fsw=new FlightSceneWrapper(msw);
-		MainView.getInstance().setScene(fsw.getScena());
+		AvionDto odabran=psw.getAvioni().getSelectionModel().getSelectedItem();
+		LetDialog dialog=new LetDialog(odabran);
+		dialog.showAndWait();
 	}
 
 }
