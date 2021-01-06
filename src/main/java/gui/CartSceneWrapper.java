@@ -71,7 +71,8 @@ public class CartSceneWrapper extends SceneWrapper {
 				try {
 					TicketOperator.getInstance().reserve(letDto.getId(),
 							lista.getSelected().getId(), kolicina.getValue());
-					TicketOperator.getInstance().displayKarte(0);
+					// Nateraj ga da se osvezi zbog milja
+					UserOperator.getInstance().getUserInfo(true);
 					MainView.getInstance().setScene(scena);
 				} catch (HttpClientErrorException e) {
 					ExceptionHandler.prikaziGresku(e);
