@@ -107,7 +107,7 @@ public class UserOperator {
 		}
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
-                .exchange(BLURL.getGatewayUserOperationURL(korisnikDto.getId()), HttpMethod.POST, null, KorisnikDto.class);
+                .exchange(BLURL.getGatewayUserOperationURL(korisnikDto.getId()), HttpMethod.GET, null, KorisnikDto.class);
         //then
         if(response.getStatusCode().equals(HttpStatus.OK)) {
         	korisnikDto = response.getBody();
