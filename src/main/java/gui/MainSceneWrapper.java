@@ -55,7 +55,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	
 	private AccordionRange durationFilter;
 	private AccordionRange priceFilter;
-	//private AccordionRange daljinaFilter;
+	private AccordionRange distanceFilter;
 	
 	private Accordion accordion;
 	
@@ -179,8 +179,9 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		
 		durationFilter = new AccordionRange("Trajanje");
 		priceFilter = new AccordionRange("Cena");
+		distanceFilter = new AccordionRange("Daljina");
 		
-		accordion = new Accordion(departureTpane, arrivalTpane, durationFilter, priceFilter);
+		accordion = new Accordion(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter);
 	}
 	
 	private void createTableLetovi() {
@@ -232,6 +233,10 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		if(priceFilter.isSelected()) {
 			letCriteriaDto.setMinCena(priceFilter.getLow());
 			letCriteriaDto.setMaxCena(priceFilter.getHigh());
+		}
+		if(distanceFilter.isSelected()) {
+			letCriteriaDto.setMinDaljina(distanceFilter.getLow());
+			letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
 		}
 		
 		try {

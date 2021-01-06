@@ -26,6 +26,7 @@ public class CreditCardList extends BorderPane implements IRefreshable {
 		toggleGroup = new ToggleGroup();
 		vbKartice = new VBox(16);
 		pagination = new Pagination();
+		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setPage(newIndex.intValue()));
 		dodajKarticu = new Button("Dodaj");
 		dodajKarticu.setOnAction(new ShowCCFormAction(scena, this));
 		VBox bottom = new VBox(16, dodajKarticu, pagination);
