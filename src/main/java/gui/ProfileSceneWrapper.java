@@ -7,6 +7,7 @@ import dto.KorisnikUpdateDto;
 import enums.Rank;
 import gui.komponente.CreditCardList;
 import gui.komponente.ExceptionHandler;
+import gui.komponente.KartaList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -48,7 +49,8 @@ public class ProfileSceneWrapper extends SceneWrapper {
 	private HBox hbPasos;
 	private VBox user;
 	
-	private CreditCardList lista;
+	private CreditCardList listaKartica;
+	private KartaList listaKarta;
 	
 	private Accordion accordion;
 		
@@ -64,11 +66,11 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		Image image;
 		
-		lblRank=new Label(korisnikDto.getRank().toString());
-		if(korisnikDto.getRank()==Rank.BRONZA) {
+		lblRank=new Label("" + korisnikDto.getMilje());
+		if(korisnikDto.odrediRank()==Rank.BRONZA) {
 			image = new Image("ikonice/bronze.png");
 			lblRank.setTextFill(Color.web("#cd7f32"));
-		}else if(korisnikDto.getRank()==Rank.SREBRO) {
+		}else if(korisnikDto.odrediRank()==Rank.SREBRO) {
 			image = new Image("ikonice/silver.png");
 			lblRank.setTextFill(Color.web("#c0c0c0"));
 		}else {
@@ -109,11 +111,12 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		pozadina.setLeft(user);
 		
-		lista = new CreditCardList(this);
+		listaKartica = new CreditCardList(this);
+		listaKarta = new KartaList();
 		
-		TitledPane tpKreditne=new TitledPane("Kreditne kartice", lista);
-		//TitledPane tpAvionske=new TitledPane("Avionske karte", new Button("WOOO"));
-		accordion=new Accordion(tpKreditne);
+		TitledPane tpKreditne=new TitledPane("Kreditne kartice", listaKartica);
+		TitledPane tpAvionske=new TitledPane("Avionske karte", listaKarta);
+		accordion=new Accordion(tpKreditne, tpAvionske);
 
 		pozadina.setCenter(accordion);
 		

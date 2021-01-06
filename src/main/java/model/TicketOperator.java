@@ -1,6 +1,6 @@
 package model;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.http.HttpEntity;
@@ -55,7 +55,7 @@ public class TicketOperator {
 	public void getRezervacijeLeta(List<LetDto> letovi) {
 		//given
 		ListaLetovaDto listaLetovaDto = new ListaLetovaDto();
-		listaLetovaDto.setLetovi(new ArrayList<>());
+		listaLetovaDto.setLetovi(new HashSet<>());
 		for(LetDto letDto : letovi) {
 			listaLetovaDto.getLetovi().add(letDto.getId());
 		}
@@ -82,11 +82,16 @@ public class TicketOperator {
 						brojStranice), HttpMethod.GET, null, KartaPageWrapper.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.OK)) {
-			/*for(KartaDto kartaDto : response.getBody().getContent()) {
-				System.out.println("Karta: " + kartaDto.getId() + " za let: " + kartaDto.getLetId());
-			}*/
 			return response.getBody();
 		} else {
+			throw new HttpClientErrorException(response.getStatusCode());
+		}
+	}
+	
+	public void deleteKarta(Long kartaId) {
+		ResponseEntity<Void> response = restTemplate
+                .exchange(BLURL.getGatewayDeleteReservationURL(kartaId), HttpMethod.DELETE, null, Void.class);
+		if(!response.getStatusCode().equals(HttpStatus.OK)) {
 			throw new HttpClientErrorException(response.getStatusCode());
 		}
 	}

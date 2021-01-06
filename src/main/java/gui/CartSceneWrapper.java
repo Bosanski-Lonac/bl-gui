@@ -106,9 +106,9 @@ public class CartSceneWrapper extends SceneWrapper {
 		
 		BigDecimal totalCena = letDto.getCena().multiply(new BigDecimal(kolicina));
 		BigDecimal customCena = totalCena.multiply(
-				new BigDecimal( (100 - korisnikDto.getRank().getPopust()) / 100));
+				new BigDecimal( (100 - korisnikDto.odrediRank().getPopust()) / 100));
 		cena.setText("Cena: " + totalCena.toString() + " RSD");
-		popust.setText("Vaš popust: " + korisnikDto.getRank().getPopust() + "%");
+		popust.setText("Vaš popust: " + korisnikDto.odrediRank().getPopust() + "%");
 		pravaCena.setText("Vaša cena: " + customCena.toString() + " RSD");
 	}
 }

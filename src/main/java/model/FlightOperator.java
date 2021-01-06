@@ -1,6 +1,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -11,11 +12,15 @@ import org.springframework.web.client.RestTemplate;
 
 import dto.AvionCUDto;
 import dto.AvionDto;
+import dto.KartaDto;
 import dto.LetCUDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
+import dto.LetoviDto;
+import dto.ListaLetovaDto;
 import utility.BLURL;
 import wrapper.AvionPageWrapper;
+import wrapper.KartaPageWrapper;
 import wrapper.LetPageWrapper;
 
 public class FlightOperator {
@@ -34,6 +39,25 @@ public class FlightOperator {
 		this.restTemplate = restTemplate;
 	}
 	
+	public LetoviDto getFlightsForIds(KartaPageWrapper kartaPageWrapper) {
+		//given
+		ListaLetovaDto listaLetovaDto = new ListaLetovaDto();
+		listaLetovaDto.setLetovi(new HashSet<>());
+		for(KartaDto kartaDto : kartaPageWrapper.getContent()) {
+			listaLetovaDto.getLetovi().add(kartaDto.getLetId());
+		}
+		HttpEntity<ListaLetovaDto> request = new HttpEntity<>(listaLetovaDto);
+		//when
+		ResponseEntity<LetoviDto> response = restTemplate
+				.exchange(BLURL.getGatewayFlightURL(), HttpMethod.PUT, request, LetoviDto.class);
+		//then
+		if(response.getStatusCode().equals(HttpStatus.OK)) {
+			return response.getBody();
+		} else {
+			throw new HttpClientErrorException(response.getStatusCode());
+		}
+	}
+	
 	public LetPageWrapper getFlights(LetCriteriaDto letCriteriaDto) {
 		//when
 		ResponseEntity<LetPageWrapper> response = restTemplate
@@ -49,7 +73,8 @@ public class FlightOperator {
 	public LetDto addLet(String pocetnaDestinacija, String krajnjaDestinacija, Integer duzina, BigDecimal cena, Integer milje, AvionDto avionDto) {
 		LetCUDto letCreateDto=new LetCUDto(pocetnaDestinacija, krajnjaDestinacija, duzina, cena, milje, avionDto.getId());
 		HttpEntity<LetCUDto> request=new HttpEntity<>(letCreateDto);
-		ResponseEntity<LetDto> response=restTemplate.exchange(BLURL.getGatewayFlightCreateURL(), HttpMethod.POST, request, LetDto.class);
+		ResponseEntity<LetDto> response=restTemplate.exchange(BLURL.getGatewayFlightURL(), 
+				HttpMethod.POST, request, LetDto.class);
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
 			return response.getBody();
 		}else {
