@@ -1,16 +1,15 @@
 package gui;
 
-import org.controlsfx.control.RangeSlider;
 import org.springframework.web.client.HttpClientErrorException;
 
 import controller.DeleteFlightAction;
-import controller.ReserveAction;
 import dto.KorisnikDto;
 import dto.LetCriteriaDto;
 import dto.LetDto;
 import enums.Role;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import gui.komponente.AccordionRange;
+import gui.komponente.ExceptionHandler;
+import gui.komponente.IRefreshable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,7 +19,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
@@ -40,9 +38,8 @@ import model.FlightOperator;
 import model.UserOperator;
 import wrapper.LetPageWrapper;
 
-public class MainSceneWrapper extends SceneWrapper {
+public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	private KorisnikDto korisnikDto;
-	private LetCriteriaDto letCriteriaDto;
 	private LetPageWrapper letPageWrapper;
 	
 	private MenuButton userButton;
@@ -56,11 +53,9 @@ public class MainSceneWrapper extends SceneWrapper {
 	private TextField departureFilter;
 	private TextField arrivalFilter;
 	
-	private CheckBox durationFilter;
-	private RangeSlider durationRange;
-	
-	private CheckBox priceFilter;
-	private RangeSlider priceRange;
+	private AccordionRange durationFilter;
+	private AccordionRange priceFilter;
+	//private AccordionRange daljinaFilter;
 	
 	private Accordion accordion;
 	
@@ -79,7 +74,6 @@ public class MainSceneWrapper extends SceneWrapper {
 		BorderPane pozadina=new BorderPane();
 		
 		korisnikDto = UserOperator.getInstance().getUserInfo(false);
-		letCriteriaDto = new LetCriteriaDto();
 		
 		signOut = new MenuItem("Odjavi se");
 		signOut.setOnAction(new EventHandler<ActionEvent>() {
@@ -101,7 +95,7 @@ public class MainSceneWrapper extends SceneWrapper {
 
 			@Override
 			public void handle(ActionEvent event) {
-				setTableLetovi(0);
+				setPage(0);
 			}
 			
 		});
@@ -117,7 +111,14 @@ public class MainSceneWrapper extends SceneWrapper {
 			userButton = new MenuButton(korisnikDto.getUsername(), imageView, edit, signOut);
 			
 			btnReserve = new Button("Rezerviši");
-			btnReserve.setOnAction(new ReserveAction(this));
+			btnReserve.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					LetDto letDto = getLetovi().getSelectionModel().getSelectedItem();
+					MainView.getInstance().setScene(new CartSceneWrapper(scena, letDto).getScena());
+				}
+			});
 			bottom = new HBox(applyFilter, btnReserve);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
 			editPlanes=new MenuItem("Rukovođstvo");
@@ -147,7 +148,7 @@ public class MainSceneWrapper extends SceneWrapper {
 		createTableLetovi();
 		pagination = new Pagination();
 		pagination.setStyle("-fx-page-information-visible: false;");
-		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setTableLetovi(newIndex.intValue()));
+		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setPage(newIndex.intValue()));
 		
 		center = new VBox(pagination, letovi);
 		
@@ -162,125 +163,24 @@ public class MainSceneWrapper extends SceneWrapper {
 		pozadina.setLeft(accordion);
 		pozadina.setBottom(bottom);
 		
-		setTableLetovi(0);
+		setPage(0);
 		
 		this.scena=new Scene(pozadina);
 	}
 	
 	private void createAccordion() {
 		departureFilter = new TextField();
-		departureFilter.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				letCriteriaDto.setPocetnaDestinacija(newValue);
-			}
-			
-		});
 		VBox departureBox = new VBox(departureFilter);
-		TitledPane departureTpane = new TitledPane("Pocetna destinacija", departureBox);
+		TitledPane departureTpane = new TitledPane("Početna destinacija", departureBox);
 		
 		arrivalFilter = new TextField();
-		arrivalFilter.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				letCriteriaDto.setKrajnjaDestinacija(newValue);
-			}
-			
-		});
 		VBox arrivalBox = new VBox(arrivalFilter);
 		TitledPane arrivalTpane = new TitledPane("Krajnja destinacija", arrivalBox);
 		
-		durationFilter = new CheckBox("Koristi filter");
-		durationFilter.selectedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(newValue) {
-					durationRange.setDisable(false);
-				} else {
-					durationRange.setDisable(true);
-					letCriteriaDto.setMinDuzina(null);
-					letCriteriaDto.setMaxDuzina(null);
-				}
-			}
-			
-		});
-		durationRange = new RangeSlider(0, 500, 120, 420);
-		durationRange.lowValueChangingProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(!newValue) {
-					letCriteriaDto.setMinDuzina((int)durationRange.getLowValue());
-				}
-			}
-			
-		});
-		durationRange.highValueChangingProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(!newValue) {
-					letCriteriaDto.setMaxDuzina((int)durationRange.getHighValue());
-				}
-			}
-			
-		});
-		durationRange.setShowTickLabels(true);
-		durationRange.setShowTickMarks(true);
-		durationRange.setBlockIncrement(1f);
-		durationRange.setMajorTickUnit(10f);
-		durationRange.setDisable(true);
-		VBox durationBox = new VBox(10, durationFilter, durationRange);
-		TitledPane durationTpane = new TitledPane("Duzina", durationBox);
+		durationFilter = new AccordionRange("Trajanje");
+		priceFilter = new AccordionRange("Cena");
 		
-		priceFilter = new CheckBox("Koristi filter");
-		priceFilter.selectedProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(newValue) {
-					priceRange.setDisable(false);
-				} else {
-					priceRange.setDisable(true);
-					letCriteriaDto.setMinCena(null);
-					letCriteriaDto.setMaxCena(null);
-				}
-			}
-			
-		});
-		priceRange = new RangeSlider(0, 500, 100, 500);
-		priceRange.lowValueChangingProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(!newValue) {
-					letCriteriaDto.setMinCena((int)priceRange.getLowValue());
-				}
-			}
-			
-		});
-		priceRange.highValueChangingProperty().addListener(new ChangeListener<Boolean>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(!newValue) {
-					letCriteriaDto.setMaxCena((int)priceRange.getHighValue());
-				}
-			}
-			
-		});
-		priceRange.setShowTickLabels(true);
-		priceRange.setShowTickMarks(true);
-		priceRange.setBlockIncrement(1f);
-		priceRange.setMajorTickUnit(20f);
-		priceRange.setDisable(true);
-		VBox priceBox = new VBox(10, priceFilter, priceRange);
-		TitledPane cenaTpane = new TitledPane("Cena", priceBox);
-		
-		accordion = new Accordion(departureTpane, arrivalTpane, durationTpane, cenaTpane);
+		accordion = new Accordion(departureTpane, arrivalTpane, durationFilter, priceFilter);
 	}
 	
 	private void createTableLetovi() {
@@ -313,13 +213,27 @@ public class MainSceneWrapper extends SceneWrapper {
 		letovi.getColumns().add(kapacitet);
 	}
 	
-	public void setTableLetovi(int page) {
+	@Override
+	public void setPage(int page) {
 		if(letovi.getItems().size() < 2 && page == -2 && pagination.getCurrentPageIndex() > 1) {
 			page = pagination.getCurrentPageIndex() - 1;
 		} else if(page < 0) {
 			page = pagination.getCurrentPageIndex();
 		}
+		LetCriteriaDto letCriteriaDto = new LetCriteriaDto();
 		letCriteriaDto.setBrojStranice(page);
+		
+		letCriteriaDto.setPocetnaDestinacija(departureFilter.getText());
+		letCriteriaDto.setKrajnjaDestinacija(arrivalFilter.getText());
+		if(durationFilter.isSelected()) {
+			letCriteriaDto.setMinDuzina(durationFilter.getLow());
+			letCriteriaDto.setMaxDuzina(durationFilter.getHigh());
+		}
+		if(priceFilter.isSelected()) {
+			letCriteriaDto.setMinCena(priceFilter.getLow());
+			letCriteriaDto.setMaxCena(priceFilter.getHigh());
+		}
+		
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
 		} catch (HttpClientErrorException e) {

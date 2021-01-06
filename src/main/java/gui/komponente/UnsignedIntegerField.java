@@ -1,4 +1,4 @@
-package gui;
+package gui.komponente;
 
 import java.util.function.UnaryOperator;
 

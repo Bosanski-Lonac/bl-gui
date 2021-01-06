@@ -2,20 +2,23 @@ package controller;
 
 import gui.CreditCardAdditionWrapper;
 import gui.MainView;
-import gui.ProfileSceneWrapper;
+import gui.SceneWrapper;
+import gui.komponente.IRefreshable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 public class ShowCCFormAction implements EventHandler<ActionEvent> {
-	private ProfileSceneWrapper psw;
+	private SceneWrapper scena;
+	private IRefreshable refreshable;
 
-	public ShowCCFormAction(ProfileSceneWrapper psw) {
-		this.psw=psw;
+	public ShowCCFormAction(SceneWrapper scena, IRefreshable refreshable) {
+		this.scena=scena;
+		this.refreshable=refreshable;
 	}
 	
 	@Override
 	public void handle(ActionEvent event) {
-		CreditCardAdditionWrapper ccaw=new CreditCardAdditionWrapper(psw);
+		CreditCardAdditionWrapper ccaw=new CreditCardAdditionWrapper(scena, refreshable);
 		MainView.getInstance().setScene(ccaw.getScena());
 	}
 

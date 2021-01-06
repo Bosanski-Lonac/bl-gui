@@ -3,7 +3,7 @@ package controller;
 import org.springframework.web.client.HttpClientErrorException;
 
 import gui.AvionDialog;
-import gui.ExceptionHandler;
+import gui.komponente.ExceptionHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.FlightOperator;

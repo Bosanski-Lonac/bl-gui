@@ -1,6 +1,6 @@
 package controller;
 
-import gui.UnsignedIntegerField;
+import gui.komponente.UnsignedIntegerField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 

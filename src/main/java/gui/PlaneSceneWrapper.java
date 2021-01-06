@@ -7,6 +7,8 @@ import controller.ShowFlightFormAction;
 import controller.ShowPlaneFormAction;
 import dto.AvionDto;
 import dto.KorisnikDto;
+import gui.komponente.ExceptionHandler;
+import gui.komponente.IRefreshable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,7 +34,7 @@ import model.FlightOperator;
 import model.UserOperator;
 import wrapper.AvionPageWrapper;
 
-public class PlaneSceneWrapper extends SceneWrapper {
+public class PlaneSceneWrapper extends SceneWrapper implements IRefreshable {
 	private KorisnikDto korisnikDto;
 	private AvionPageWrapper avionPageWrapper;
 	
@@ -99,7 +101,7 @@ public class PlaneSceneWrapper extends SceneWrapper {
 		createTableAvioni();
 		pagination = new Pagination();
 		pagination.setStyle("-fx-page-information-visible: false;");
-		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setTableAvioni(newIndex.intValue()));
+		pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> setPage(newIndex.intValue()));
 		
 		center = new VBox(pagination, avioni);
 		
@@ -119,7 +121,7 @@ public class PlaneSceneWrapper extends SceneWrapper {
 		pozadina.setCenter(center);
 		pozadina.setBottom(bottom);
 		
-		setTableAvioni(0);
+		setPage(0);
 		
 		this.scena=new Scene(pozadina);
 	}
@@ -138,7 +140,7 @@ public class PlaneSceneWrapper extends SceneWrapper {
 		avioni.getColumns().add(kapacitet);
 	}
 	
-	public void setTableAvioni(int page) {
+	public void setPage(int page) {
 		if(avioni.getItems().size() < 2 && page == -2 && pagination.getCurrentPageIndex() > 1) {
 			page = pagination.getCurrentPageIndex() - 1;
 		} else if(page < 0) {

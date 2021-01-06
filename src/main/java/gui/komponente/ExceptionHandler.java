@@ -1,4 +1,4 @@
-package gui;
+package gui.komponente;
 
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -18,7 +18,7 @@ public class ExceptionHandler {
 			pos += 8;
 			message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
 		} else {
-			message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos) - 1);
+			message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
 		}
 		alert.setContentText(message);
 		alert.showAndWait();

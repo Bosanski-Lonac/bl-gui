@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import dto.KartaDto;
 import dto.KartaReserveDto;
 import utility.BLURL;
+import wrapper.KartaPageWrapper;
 
 public class TicketOperator {
 	private static TicketOperator instance = null;
@@ -27,17 +28,35 @@ public class TicketOperator {
 		this.restTemplate = restTemplate;
 	}
 	
-	public KartaDto reserve(Long korisnikId, Long letId, Long kreditnaKarticaId) {
+	public void reserve(Long letId, Long kreditnaKarticaId, Integer kolicina) {
 		//given
 		KartaReserveDto kartaReserveDto = new KartaReserveDto();
 		kartaReserveDto.setKreditnaKarticaId(kreditnaKarticaId);
 		kartaReserveDto.setLetId(letId);
+		kartaReserveDto.setKolicina(kolicina);
 		HttpEntity<KartaReserveDto> request = new HttpEntity<>(kartaReserveDto);
 		//when
-		ResponseEntity<KartaDto> response = restTemplate
-				.exchange(BLURL.getGatewayReserveURL(korisnikId), HttpMethod.POST, request, KartaDto.class);
+		ResponseEntity<Void> response = restTemplate
+				.exchange(BLURL.getGatewayReserveURL(UserOperator.getInstance().getUserInfo(false).getId()),
+						HttpMethod.POST, request, Void.class);
 		//then
 		if(response.getStatusCode().equals(HttpStatus.CREATED)) {
+		} else {
+			throw new HttpClientErrorException(response.getStatusCode());
+		}
+	}
+	
+	public KartaPageWrapper displayKarte(Integer brojStranice) {
+		//when
+		ResponseEntity<KartaPageWrapper> response = restTemplate
+				.exchange(BLURL.getGatewayReservationsURL(UserOperator.getInstance().getUserInfo(false).getId(),
+						brojStranice), HttpMethod.GET, null, KartaPageWrapper.class);
+		//then
+		if(response.getStatusCode().equals(HttpStatus.OK)) {
+			for(KartaDto kartaDto : response.getBody().getContent()) {
+				System.out.println(kartaDto.getId());
+				System.out.println(kartaDto.getLetId());
+			}
 			return response.getBody();
 		} else {
 			throw new HttpClientErrorException(response.getStatusCode());

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import dto.KorisnikCUDto;
+import dto.KorisnikCreateDto;
 import dto.KorisnikDto;
 import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
@@ -60,9 +60,9 @@ public class Main {
 	}
 	public static void testCorrectRegisterA(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikACreateDto = new KorisnikCUDto("agasic218rn@raf.rs",
+		KorisnikCreateDto korisnikACreateDto = new KorisnikCreateDto("agasic218rn@raf.rs",
 				"testPassword", "Andrej", "Gasic", "bgrs1326z");
-		HttpEntity<KorisnikCUDto> requestA = new HttpEntity<>(korisnikACreateDto);
+		HttpEntity<KorisnikCreateDto> requestA = new HttpEntity<>(korisnikACreateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
                 .exchange(URL + KORISNIK_URL, HttpMethod.POST, requestA, KorisnikDto.class);
@@ -74,9 +74,9 @@ public class Main {
     }
 	public static void testCorrectRegisterB(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikBCreateDto = new KorisnikCUDto("sbudimac618rn@raf.rs",
+		KorisnikCreateDto korisnikBCreateDto = new KorisnikCreateDto("sbudimac618rn@raf.rs",
 				"testPassword1", "Stefan", "Budimac", "bgrs1264z");
-		HttpEntity<KorisnikCUDto> requestB = new HttpEntity<>(korisnikBCreateDto);
+		HttpEntity<KorisnikCreateDto> requestB = new HttpEntity<>(korisnikBCreateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
                 .exchange(URL + KORISNIK_URL, HttpMethod.POST, requestB, KorisnikDto.class);
@@ -88,9 +88,9 @@ public class Main {
     }
 	public static void testIncorrectRegister(RestTemplate restTemplate) {
         //given
-		KorisnikCUDto korisnikBCreateDto = new KorisnikCUDto("gupsi",
+		KorisnikCreateDto korisnikBCreateDto = new KorisnikCreateDto("gupsi",
 				"o", "Luka", "Kovacevic", "o");
-		HttpEntity<KorisnikCUDto> requestB = new HttpEntity<>(korisnikBCreateDto);
+		HttpEntity<KorisnikCreateDto> requestB = new HttpEntity<>(korisnikBCreateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
                 .exchange(URL + KORISNIK_URL, HttpMethod.POST, requestB, KorisnikDto.class);

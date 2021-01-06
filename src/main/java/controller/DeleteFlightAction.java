@@ -3,8 +3,8 @@ package controller;
 import org.springframework.web.client.HttpClientErrorException;
 
 import dto.LetDto;
-import gui.ExceptionHandler;
 import gui.MainSceneWrapper;
+import gui.komponente.ExceptionHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
@@ -23,7 +23,7 @@ public class DeleteFlightAction implements EventHandler<ActionEvent> {
 		LetDto odabran=letovi.getSelectionModel().getSelectedItem();
 		try {
 			FlightOperator.getInstance().deleteFlight(odabran.getId());
-			msw.setTableLetovi(-2);
+			msw.setPage(-2);
 		} catch (HttpClientErrorException e) {
 			ExceptionHandler.prikaziGresku(e);
 		}

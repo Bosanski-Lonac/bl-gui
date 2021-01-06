@@ -9,8 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import dto.KorisnikCUDto;
+import dto.KorisnikCreateDto;
 import dto.KorisnikDto;
+import dto.KorisnikUpdateDto;
 import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
@@ -38,9 +39,9 @@ public class UserOperator {
 	
 	public KorisnikDto registerUser(String email, String sifra, String ime, String prezime, String brojPasosa) {
 		//given
-		KorisnikCUDto korisnikCreateDto = new KorisnikCUDto(email,
+		KorisnikCreateDto korisnikCreateDto = new KorisnikCreateDto(email,
 				sifra, ime, prezime, brojPasosa);
-		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikCreateDto);
+		HttpEntity<KorisnikCreateDto> request = new HttpEntity<>(korisnikCreateDto);
         //when
         ResponseEntity<TokenResponseDto> response = restTemplate
                 .exchange(BLURL.getGatewayUserCreateURL(), HttpMethod.POST, request, TokenResponseDto.class);
@@ -116,9 +117,9 @@ public class UserOperator {
         }
 	}
 	
-	public KorisnikDto updateUserInfo(KorisnikCUDto korisnikUpdateDto) {
+	public KorisnikDto updateUserInfo(KorisnikUpdateDto korisnikUpdateDto) {
 		//given
-		HttpEntity<KorisnikCUDto> request = new HttpEntity<>(korisnikUpdateDto);
+		HttpEntity<KorisnikUpdateDto> request = new HttpEntity<>(korisnikUpdateDto);
         //when
         ResponseEntity<KorisnikDto> response = restTemplate
                 .exchange(BLURL.getGatewayUserOperationURL(korisnikDto.getId()), HttpMethod.PUT, request, KorisnikDto.class);

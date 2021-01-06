@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import org.springframework.web.client.HttpClientErrorException;
 
 import dto.AvionDto;
-import gui.ExceptionHandler;
 import gui.LetDialog;
+import gui.komponente.ExceptionHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.FlightOperator;

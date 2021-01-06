@@ -1,5 +1,9 @@
 package gui;
 
+import org.springframework.web.client.HttpClientErrorException;
+
+import gui.komponente.ExceptionHandler;
+import gui.komponente.IRefreshable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -8,16 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import model.UserOperator;
 
 public class CreditCardAdditionWrapper extends SceneWrapper {
@@ -36,14 +33,13 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 	private HBox hbSigurnosniBroj;
 	
 	private VBox vbCardInfo;
-	private VBox vbCenter;
 	
 	private Button btnDodaj;
 	private Button btnCancel;
 	
 	private HBox bottom;
 	
-	public CreditCardAdditionWrapper(ProfileSceneWrapper userProfile) {
+	public CreditCardAdditionWrapper(SceneWrapper scena, IRefreshable refreshable) {
 		BorderPane pozadina=new BorderPane();
 		
 		lblBrojKartice=new Label("Broj kreditne kartice: ");
@@ -66,29 +62,24 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 		vbCardInfo=new VBox(10, hbBrojKartice, hbFullName, hbSigurnosniBroj);
 		vbCardInfo.setAlignment(Pos.CENTER);
 		
-		FlowPane center=new FlowPane();
-		center.getChildren().addAll(vbCardInfo);
-		center.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		center.setPadding(new Insets(9, 9, 9, 9));
-		center.setAlignment(Pos.CENTER);
-		
-		vbCenter=new VBox(10, center);
-		vbCenter.setAlignment(Pos.CENTER);
-		
-		pozadina.setCenter(vbCenter);
+		pozadina.setCenter(vbCardInfo);
 		
 		btnDodaj=new Button("Dodaj");
 		btnDodaj.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
-				Long brojKartice=Long.parseLong(tfBrojKartice.getText());
-				String imeVlasnika=tfImeVlasnika.getText();
-				String prezimeVlasnika=tfPrezimeVlasnika.getText();
-				Integer sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
-				UserOperator.getInstance().addCC(brojKartice, imeVlasnika, prezimeVlasnika, sigurnosniBroj);
-				userProfile.CCRefresh();
-				MainView.getInstance().setScene(userProfile.getScena());
+				try {
+					Long brojKartice=Long.parseLong(tfBrojKartice.getText());
+					String imeVlasnika=tfImeVlasnika.getText();
+					String prezimeVlasnika=tfPrezimeVlasnika.getText();
+					Integer sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
+					UserOperator.getInstance().addCC(brojKartice, imeVlasnika, prezimeVlasnika, sigurnosniBroj);
+					refreshable.setPage(-1);
+					MainView.getInstance().setScene(scena.getScena());
+				} catch (HttpClientErrorException e) {
+					ExceptionHandler.prikaziGresku(e);
+				}
 			}
 			
 		});
@@ -98,14 +89,14 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 
 			@Override
 			public void handle(ActionEvent event) {
-				MainView.getInstance().setScene(userProfile.getScena());
+				MainView.getInstance().setScene(scena.getScena());
 			}
 			
 		});
 		
 		bottom=new HBox(10, btnDodaj, btnCancel);
 		bottom.setAlignment(Pos.CENTER);
-		bottom.setPadding(new Insets(24, 24, 24, 24));
+		bottom.setPadding(new Insets(24, 0, 24, 0));
 		
 		pozadina.setBottom(bottom);
 		

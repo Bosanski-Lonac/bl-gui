@@ -2,10 +2,10 @@ package controller;
 
 import org.springframework.web.client.HttpClientErrorException;
 
-import gui.ExceptionHandler;
 import gui.KorisnickiSignupDialog;
 import gui.MainSceneWrapper;
 import gui.MainView;
+import gui.komponente.ExceptionHandler;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import model.UserOperator;

@@ -22,7 +22,7 @@ public class ShowFlightFormAction implements EventHandler<ActionEvent> {
 		LetDialog dialog=new LetDialog(odabran);
 		Optional<LetDto> result = dialog.showAndWait();
 		if(result.isPresent()) {
-			psw.setTableAvioni(-1);
+			psw.setPage(-1);
 		}
 	}
 

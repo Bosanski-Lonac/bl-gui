@@ -2,6 +2,7 @@ package gui;
 
 import controller.DodajAvionAction;
 import dto.AvionDto;
+import gui.komponente.UnsignedIntegerField;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
