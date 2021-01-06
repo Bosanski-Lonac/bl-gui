@@ -10,15 +10,20 @@ public class ExceptionHandler {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Communication Error");
 		alert.setHeaderText(e.getStatusCode().toString());
-		int pos = e.getMessage().indexOf("\"message\":");
-		pos += 11;
+		System.out.println(e.getMessage());
 		String message;
-		if(e.getMessage().charAt(pos) == '"') {
-			pos = e.getMessage().indexOf("\"path\":");
-			pos += 8;
-			message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+		int pos = e.getMessage().indexOf("\"message\":");
+		if(pos == -1) {
+			message = e.getMessage();
 		} else {
-			message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+			pos += 11;
+			if(e.getMessage().charAt(pos) == '"') {
+				pos = e.getMessage().indexOf("\"path\":");
+				pos += 8;
+				message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+			} else {
+				message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+			}
 		}
 		alert.setContentText(message);
 		alert.showAndWait();

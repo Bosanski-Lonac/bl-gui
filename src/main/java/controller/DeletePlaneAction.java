@@ -21,6 +21,9 @@ public class DeletePlaneAction implements EventHandler<ActionEvent> {
 	public void handle(ActionEvent event) {
 		TableView<AvionDto> avioni = psw.getAvioni();
 		AvionDto odabran=avioni.getSelectionModel().getSelectedItem();
+		if(odabran == null) {
+			return;
+		}
 		try {
 			FlightOperator.getInstance().deletePlane(odabran.getId());
 			psw.setPage(-2);

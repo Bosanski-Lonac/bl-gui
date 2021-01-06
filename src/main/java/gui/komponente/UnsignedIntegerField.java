@@ -2,7 +2,6 @@ package gui.komponente;
 
 import java.util.function.UnaryOperator;
 
-import controller.UnsignedIntegerFieldListener;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
@@ -24,7 +23,5 @@ public class UnsignedIntegerField extends TextField {
 
         this.setTextFormatter(
             new TextFormatter<Integer>(new IntegerStringConverter(), 0, integerFilter));
-        
-        this.textProperty().addListener(new UnsignedIntegerFieldListener(this));
 	}
 }
