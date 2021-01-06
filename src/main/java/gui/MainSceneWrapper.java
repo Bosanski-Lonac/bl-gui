@@ -35,6 +35,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import model.FlightOperator;
+import model.TicketOperator;
 import model.UserOperator;
 import wrapper.LetPageWrapper;
 
@@ -247,6 +248,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		}
 		ObservableList<LetDto> letoviData = FXCollections.observableArrayList(letPageWrapper.getContent());
 		letovi.setItems(letoviData);
+		TicketOperator.getInstance().getRezervacijeLeta(letoviData);
 		pagination.setPageCount(letPageWrapper.getTotalPages());
 	}
 	
