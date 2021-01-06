@@ -10,7 +10,6 @@ public class ExceptionHandler {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Communication Error");
 		alert.setHeaderText(e.getStatusCode().toString());
-		System.out.println(e.getMessage());
 		String message;
 		int pos = e.getMessage().indexOf("\"message\":");
 		if(pos == -1) {
@@ -20,9 +19,17 @@ public class ExceptionHandler {
 			if(e.getMessage().charAt(pos) == '"') {
 				pos = e.getMessage().indexOf("\"path\":");
 				pos += 8;
-				message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+				int end = e.getMessage().indexOf("\"", pos);
+				if(end == -1) {
+					end = e.getMessage().length() - 1;
+				}
+				message = e.getMessage().substring(pos, end);
 			} else {
-				message = e.getMessage().substring(pos, e.getMessage().indexOf("\"", pos));
+				int end = e.getMessage().indexOf("\"", pos);
+				if(end == -1) {
+					end = e.getMessage().length() - 1;
+				}
+				message = e.getMessage().substring(pos, end);
 			}
 		}
 		alert.setContentText(message);
