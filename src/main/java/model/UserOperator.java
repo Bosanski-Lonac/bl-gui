@@ -16,7 +16,7 @@ import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
 import dto.TokenResponseDto;
-import security.TokenInterceptor;
+import utility.TokenInterceptor;
 import utility.BLURL;
 import wrapper.KreditnaKarticaPageWrapper;
 

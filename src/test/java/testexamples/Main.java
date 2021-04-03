@@ -1,3 +1,4 @@
+package testexamples;
 import java.util.Collections;
 
 import org.springframework.http.HttpEntity;
@@ -12,7 +13,7 @@ import dto.KreditnaKarticaCUDto;
 import dto.KreditnaKarticaDto;
 import dto.TokenRequestDto;
 import dto.TokenResponseDto;
-import security.TokenInterceptor;
+import utility.TokenInterceptor;
 import wrapper.KreditnaKarticaPageWrapper;
 
 public class Main {
