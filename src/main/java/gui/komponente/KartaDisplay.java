@@ -34,7 +34,7 @@ public class KartaDisplay extends GridPane {
 		lblDatum = new Label(kartaDto.getDatumKupovine().toString());
 		lblCena = new Label(kartaDto.getCena() + " RSD");
 		
-		Image image = new Image("ikonice/close.png");
+		Image image = new Image(this.getClass().getResource("/ikonice/close.png").toString());
 		ImageView imageView = new ImageView(image);
 		
 		imageView.setFitWidth(16);

@@ -80,7 +80,7 @@ public class PlaneSceneWrapper extends SceneWrapper implements IRefreshable {
 			}
 		});
 		
-		Image image = new Image("ikonice/profile.png");
+		Image image = new Image(this.getClass().getResource("/ikonice/profile.png").toString());
 		ImageView imageView = new ImageView(image);
 		
 		imageView.setFitHeight(24);

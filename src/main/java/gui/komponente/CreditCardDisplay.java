@@ -33,7 +33,7 @@ public class CreditCardDisplay extends HBox {
 		lblBrojKartice = new Label(kreditnaKarticaDto.getKrajKartice());
 		lblPunoIme = new Label(kreditnaKarticaDto.getImeVlasnika() + " " + kreditnaKarticaDto.getPrezimeVlasnika());
 		
-		Image image = new Image("ikonice/close.png");
+		Image image = new Image(this.getClass().getResource("/ikonice/close.png").toString());
 		ImageView imageView = new ImageView(image);
 		
 		imageView.setFitWidth(16);

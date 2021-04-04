@@ -68,13 +68,13 @@ public class ProfileSceneWrapper extends SceneWrapper {
 		
 		lblRank=new Label("" + korisnikDto.getMilje());
 		if(korisnikDto.odrediRank()==Rank.BRONZA) {
-			image = new Image("ikonice/bronze.png");
+			image = new Image(this.getClass().getResource("/ikonice/bronze.png").toString());
 			lblRank.setTextFill(Color.web("#cd7f32"));
 		}else if(korisnikDto.odrediRank()==Rank.SREBRO) {
-			image = new Image("ikonice/silver.png");
+			image = new Image(this.getClass().getResource("/ikonice/silver.png").toString());
 			lblRank.setTextFill(Color.web("#c0c0c0"));
 		}else {
-			image = new Image("ikonice/gold.png");
+			image = new Image(this.getClass().getResource("/ikonice/gold.png").toString());
 			lblRank.setTextFill(Color.web("#ffd700"));
 		}
 		
