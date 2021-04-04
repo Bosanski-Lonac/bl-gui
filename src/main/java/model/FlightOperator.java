@@ -3,6 +3,7 @@ package model;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
+import dto.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -10,14 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import dto.AvionCUDto;
-import dto.AvionDto;
-import dto.KartaDto;
-import dto.LetCUDto;
-import dto.LetCriteriaDto;
-import dto.LetDto;
-import dto.LetoviDto;
-import dto.ListaLetovaDto;
 import utility.BLURL;
 import wrapper.AvionPageWrapper;
 import wrapper.KartaPageWrapper;
@@ -112,6 +105,15 @@ public class FlightOperator {
 	public void deletePlane(Long avionId) {
 		ResponseEntity<Void> response=restTemplate.exchange(BLURL.getGatewayPlaneDeleteURL(avionId), HttpMethod.DELETE, null, Void.class);
 		if(!response.getStatusCode().equals(HttpStatus.OK)) {
+			throw new HttpClientErrorException(response.getStatusCode());
+		}
+	}
+
+	public LetoviInfoDto getLetoviInfo() {
+		ResponseEntity<LetoviInfoDto> response=restTemplate.exchange(BLURL.getGatewayFlightInfoURL(), HttpMethod.GET, null, LetoviInfoDto.class);
+		if(response.getStatusCode().equals(HttpStatus.OK)) {
+			return response.getBody();
+		} else{
 			throw new HttpClientErrorException(response.getStatusCode());
 		}
 	}

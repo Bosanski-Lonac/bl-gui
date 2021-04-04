@@ -1,5 +1,7 @@
 package gui;
 
+import gui.komponente.exceptions.MissingInputException;
+import javafx.scene.control.Alert;
 import org.springframework.web.client.HttpClientErrorException;
 
 import gui.komponente.ExceptionHandler;
@@ -69,16 +71,21 @@ public class CreditCardAdditionWrapper extends SceneWrapper {
 
 			@Override
 			public void handle(ActionEvent event) {
+				Long brojKartice = null;
+				String imeVlasnika = null, prezimeVlasnika = null;
+				Integer sigurnosniBroj = null;
 				try {
-					Long brojKartice=Long.parseLong(tfBrojKartice.getText());
-					String imeVlasnika=tfImeVlasnika.getText();
-					String prezimeVlasnika=tfPrezimeVlasnika.getText();
-					Integer sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
+					brojKartice=Long.parseLong(tfBrojKartice.getText());
+					imeVlasnika=tfImeVlasnika.getText();
+					prezimeVlasnika=tfPrezimeVlasnika.getText();
+					sigurnosniBroj=Integer.parseInt(tfSigurnosniBroj.getText());
 					UserOperator.getInstance().addCC(brojKartice, imeVlasnika, prezimeVlasnika, sigurnosniBroj);
 					refreshable.setPage(-1);
 					MainView.getInstance().setScene(scena.getScena());
 				} catch (HttpClientErrorException e) {
 					ExceptionHandler.prikaziGresku(e);
+				} catch (NumberFormatException e) {
+					ExceptionHandler.prikaziGresku(new MissingInputException("Lose ste uneli informacije!"));
 				}
 			}
 			

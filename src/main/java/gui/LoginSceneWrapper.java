@@ -34,11 +34,9 @@ public class LoginSceneWrapper extends SceneWrapper {
 		
 		loginBtn = new Button("Prijavite se");
 		loginBtn.setOnAction(new LoginAction(this));
-		GUIDekorater.getInstance().decorate(loginBtn);
-		
+
 		signupBtn=new Button("Registrujte se");
 		signupBtn.setOnAction(new SignupAction());
-		GUIDekorater.getInstance().decorate(signupBtn);
 		cbAdmin=new CheckBox("Admin");
 		
 		register = new HBox(signupBtn);

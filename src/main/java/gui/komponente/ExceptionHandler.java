@@ -1,5 +1,6 @@
 package gui.komponente;
 
+import gui.komponente.exceptions.MissingInputException;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javafx.scene.control.Alert;
@@ -33,6 +34,14 @@ public class ExceptionHandler {
 			}
 		}
 		alert.setContentText(message);
+		alert.showAndWait();
+	}
+
+	public static void prikaziGresku(MissingInputException e){
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Invalid input");
+		alert.setHeaderText("Nedosaju parametri");
+		alert.setContentText(e.getMessage());
 		alert.showAndWait();
 	}
 }
