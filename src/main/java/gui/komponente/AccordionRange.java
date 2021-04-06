@@ -1,5 +1,7 @@
 package gui.komponente;
 
+import dto.LetoviInfoDto;
+import model.FlightOperator;
 import org.controlsfx.control.RangeSlider;
 
 import javafx.beans.value.ChangeListener;
@@ -13,7 +15,7 @@ public class AccordionRange extends TitledPane {
 	private RangeSlider range;
 	private VBox box;
 	
-	public AccordionRange(String name) {
+	public AccordionRange(String name, LetoviInfoDto letoviInfoDto) {
 		super();
 		this.setText(name);
 		filter = new CheckBox("Koristi filter");
@@ -24,7 +26,14 @@ public class AccordionRange extends TitledPane {
 				range.setDisable(!newValue);
 			}
 		});
-		range = new RangeSlider(0, 500, 120, 420);
+
+		if (name.equals("Trajanje")) {
+			range = new RangeSlider(letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina(), letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina());
+		} else if (name.equals("Cena")) {
+			range = new RangeSlider(letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact(), letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact());
+		} else {
+			range = new RangeSlider(letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina(), letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina());
+		}
 		range.setShowTickLabels(true);
 		range.setShowTickMarks(true);
 		range.setBlockIncrement(1f);

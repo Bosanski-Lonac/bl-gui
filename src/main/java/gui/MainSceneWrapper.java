@@ -1,5 +1,6 @@
 package gui;
 
+import dto.LetoviInfoDto;
 import org.springframework.web.client.HttpClientErrorException;
 
 import controller.DeleteFlightAction;
@@ -177,10 +178,12 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		arrivalFilter = new TextField();
 		VBox arrivalBox = new VBox(arrivalFilter);
 		TitledPane arrivalTpane = new TitledPane("Krajnja destinacija", arrivalBox);
-		
-		durationFilter = new AccordionRange("Trajanje");
-		priceFilter = new AccordionRange("Cena");
-		distanceFilter = new AccordionRange("Daljina");
+
+		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
+
+		durationFilter = new AccordionRange("Trajanje", letoviInfoDto);
+		priceFilter = new AccordionRange("Cena", letoviInfoDto);
+		distanceFilter = new AccordionRange("Daljina", letoviInfoDto);
 		
 		accordion = new Accordion(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter);
 	}
@@ -222,6 +225,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		} else if(page < 0) {
 			page = pagination.getCurrentPageIndex();
 		}
+
 		LetCriteriaDto letCriteriaDto = new LetCriteriaDto();
 		letCriteriaDto.setBrojStranice(page);
 		
