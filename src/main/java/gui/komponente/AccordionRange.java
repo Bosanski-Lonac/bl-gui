@@ -27,13 +27,8 @@ public class AccordionRange extends TitledPane {
 			}
 		});
 
-		if (name.equals("Trajanje")) {
-			range = new RangeSlider(letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina(), letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina());
-		} else if (name.equals("Cena")) {
-			range = new RangeSlider(letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact(), letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact());
-		} else {
-			range = new RangeSlider(letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina(), letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina());
-		}
+		setRange(name, letoviInfoDto);
+
 		range.setShowTickLabels(true);
 		range.setShowTickMarks(true);
 		range.setBlockIncrement(1f);
@@ -41,6 +36,16 @@ public class AccordionRange extends TitledPane {
 		range.setDisable(true);
 		box = new VBox(filter, range);
 		this.setContent(box);
+	}
+
+	public void setRange(String name, LetoviInfoDto letoviInfoDto){
+		if (name.equals("Trajanje")) {
+			range = new RangeSlider(letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina(), letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina());
+		} else if (name.equals("Cena")) {
+			range = new RangeSlider(letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact(), letoviInfoDto.getMinCena().intValueExact(), letoviInfoDto.getMaxCena().intValueExact());
+		} else {
+			range = new RangeSlider(letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina(), letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina());
+		}
 	}
 	
 	public boolean isSelected() {

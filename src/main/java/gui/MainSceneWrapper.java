@@ -243,6 +243,13 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 			letCriteriaDto.setMinDaljina(distanceFilter.getLow());
 			letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
 		}
+
+		departureFilter.setText("");
+		arrivalFilter.setText("");
+		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
+		durationFilter.setRange("Trajanje", letoviInfoDto);
+		priceFilter.setRange("Cena", letoviInfoDto);
+		distanceFilter.setRange("Daljina", letoviInfoDto);
 		
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
