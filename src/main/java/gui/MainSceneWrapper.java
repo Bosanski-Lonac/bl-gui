@@ -1,6 +1,7 @@
 package gui;
 
 import dto.LetoviInfoDto;
+import gui.komponente.AutoCompleteTextField;
 import org.springframework.web.client.HttpClientErrorException;
 
 import controller.DeleteFlightAction;
@@ -40,6 +41,8 @@ import model.TicketOperator;
 import model.UserOperator;
 import wrapper.LetPageWrapper;
 
+import java.util.Arrays;
+
 public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	private KorisnikDto korisnikDto;
 	private LetPageWrapper letPageWrapper;
@@ -52,8 +55,8 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	
 	private StackPane stack;
 	
-	private TextField departureFilter;
-	private TextField arrivalFilter;
+	private AutoCompleteTextField departureFilter;
+	private AutoCompleteTextField arrivalFilter;
 	
 	private AccordionRange durationFilter;
 	private AccordionRange priceFilter;
@@ -171,15 +174,17 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	}
 	
 	private void createAccordion() {
-		departureFilter = new TextField();
+		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
+
+		departureFilter = new AutoCompleteTextField();
+		departureFilter.getElementi().addAll((letoviInfoDto.getDestinacije()));
 		VBox departureBox = new VBox(departureFilter);
 		TitledPane departureTpane = new TitledPane("Početna destinacija", departureBox);
 		
-		arrivalFilter = new TextField();
+		arrivalFilter = new AutoCompleteTextField();
+		arrivalFilter.getElementi().addAll((FlightOperator.getInstance().getLetoviInfo().getDestinacije()));
 		VBox arrivalBox = new VBox(arrivalFilter);
 		TitledPane arrivalTpane = new TitledPane("Krajnja destinacija", arrivalBox);
-
-		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
 
 		durationFilter = new AccordionRange("Trajanje", letoviInfoDto);
 		priceFilter = new AccordionRange("Cena", letoviInfoDto);
