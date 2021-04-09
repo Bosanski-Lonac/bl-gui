@@ -62,7 +62,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	private AccordionRange priceFilter;
 	private AccordionRange distanceFilter;
 	
-	private Accordion accordion;
+	private VBox left;
 	
 	private Pagination pagination;
 	private TableView<LetDto> letovi;
@@ -165,7 +165,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		
 		pozadina.setTop(top);
 		pozadina.setCenter(center);
-		pozadina.setLeft(accordion);
+		pozadina.setLeft(left);
 		pozadina.setBottom(bottom);
 		
 		setPage(0);
@@ -190,7 +190,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		priceFilter = new AccordionRange("Cena", letoviInfoDto);
 		distanceFilter = new AccordionRange("Daljina", letoviInfoDto);
 		
-		accordion = new Accordion(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter);
+		left = new VBox(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter);
 	}
 	
 	private void createTableLetovi() {
@@ -236,18 +236,15 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		
 		letCriteriaDto.setPocetnaDestinacija(departureFilter.getText());
 		letCriteriaDto.setKrajnjaDestinacija(arrivalFilter.getText());
-		if(durationFilter.isSelected()) {
-			letCriteriaDto.setMinDuzina(durationFilter.getLow());
-			letCriteriaDto.setMaxDuzina(durationFilter.getHigh());
-		}
-		if(priceFilter.isSelected()) {
-			letCriteriaDto.setMinCena(priceFilter.getLow());
-			letCriteriaDto.setMaxCena(priceFilter.getHigh());
-		}
-		if(distanceFilter.isSelected()) {
-			letCriteriaDto.setMinDaljina(distanceFilter.getLow());
-			letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
-		}
+
+		letCriteriaDto.setMinDuzina(durationFilter.getLow());
+		letCriteriaDto.setMaxDuzina(durationFilter.getHigh());
+
+		letCriteriaDto.setMinCena(priceFilter.getLow());
+		letCriteriaDto.setMaxCena(priceFilter.getHigh());
+
+		letCriteriaDto.setMinDaljina(distanceFilter.getLow());
+		letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
 
 		departureFilter.setText("");
 		arrivalFilter.setText("");
