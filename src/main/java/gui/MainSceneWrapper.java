@@ -69,8 +69,9 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	
 	private Button btnObrisiLet;
 	private Button applyFilter;
+	private Button resetFilter;
 	private Button btnReserve;
-	
+
 	private HBox top;
 	private VBox center;
 	private HBox bottom;
@@ -104,6 +105,15 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 			}
 			
 		});
+
+		resetFilter = new Button("Ponisti filtere");
+		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent actionEvent) {
+				createAccordion();
+				setPage(0);
+			}
+		});
 		
 		if(korisnikDto.getRole() == Role.ROLE_USER) {
 			edit = new MenuItem("Izmeni profil");
@@ -124,7 +134,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 					MainView.getInstance().setScene(new CartSceneWrapper(scena, letDto).getScena());
 				}
 			});
-			bottom = new HBox(applyFilter, btnReserve);
+			bottom = new HBox(applyFilter, resetFilter, btnReserve);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
 			editPlanes=new MenuItem("Rukovođstvo");
 			editPlanes.setOnAction(new EventHandler<ActionEvent>() {
