@@ -110,7 +110,11 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
-				createAccordion();
+				departureFilter.setText("");
+				arrivalFilter.setText("");
+				durationFilter.resetRange();
+				priceFilter.resetRange();
+				distanceFilter.resetRange();
 				setPage(0);
 			}
 		});
@@ -256,13 +260,8 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		letCriteriaDto.setMinDaljina(distanceFilter.getLow());
 		letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
 
-		departureFilter.setText("");
-		arrivalFilter.setText("");
 		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
-		durationFilter.setRange("Trajanje", letoviInfoDto);
-		priceFilter.setRange("Cena", letoviInfoDto);
-		distanceFilter.setRange("Daljina", letoviInfoDto);
-		
+
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);
 		} catch (HttpClientErrorException e) {

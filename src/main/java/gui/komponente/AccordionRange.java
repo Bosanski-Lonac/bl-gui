@@ -17,7 +17,7 @@ public class AccordionRange extends TitledPane {
 	public AccordionRange(String name, LetoviInfoDto letoviInfoDto) {
 		super();
 		this.setText(name);
-		setRange(name, letoviInfoDto);
+		initRange(name, letoviInfoDto);
 
 		range.setShowTickLabels(true);
 		range.setShowTickMarks(true);
@@ -28,7 +28,7 @@ public class AccordionRange extends TitledPane {
 		this.setContent(range);
 	}
 
-	public void setRange(String name, LetoviInfoDto letoviInfoDto){
+	public void initRange(String name, LetoviInfoDto letoviInfoDto){
 		if (name.equals("Trajanje")) {
 			range = new RangeSlider(letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina(), letoviInfoDto.getMinDuzina(), letoviInfoDto.getMaxDuzina());
 		} else if (name.equals("Cena")) {
@@ -36,6 +36,11 @@ public class AccordionRange extends TitledPane {
 		} else {
 			range = new RangeSlider(letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina(), letoviInfoDto.getMinDaljina(), letoviInfoDto.getMaxDaljina());
 		}
+	}
+
+	public void resetRange() {
+		range.setLowValue(range.getMin());
+		range.setHighValue(range.getMax());
 	}
 	
 	public int getLow() {
