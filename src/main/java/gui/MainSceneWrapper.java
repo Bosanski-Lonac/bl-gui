@@ -98,7 +98,6 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		
 		applyFilter = new Button("Primeni filtere");
 		applyFilter.setOnAction(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent event) {
 				setPage(0);
@@ -106,7 +105,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 			
 		});
 
-		resetFilter = new Button("Ponisti filtere");
+		resetFilter = new Button("Poništi filtere");
 		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
@@ -138,7 +137,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 					MainView.getInstance().setScene(new CartSceneWrapper(scena, letDto).getScena());
 				}
 			});
-			bottom = new HBox(applyFilter, resetFilter, btnReserve);
+			bottom = new HBox(btnReserve);
 		} else if(korisnikDto.getRole() == Role.ROLE_ADMIN) {
 			editPlanes=new MenuItem("Rukovođstvo");
 			editPlanes.setOnAction(new EventHandler<ActionEvent>() {
@@ -151,7 +150,7 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 			
 			btnObrisiLet=new Button("Obriši let");
 			btnObrisiLet.setOnAction(new DeleteFlightAction(this));
-			bottom = new HBox(applyFilter, btnObrisiLet);
+			bottom = new HBox(btnObrisiLet);
 		}
 		
 		stack = new StackPane(userButton);
@@ -203,8 +202,15 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		durationFilter = new AccordionRange("Trajanje", letoviInfoDto);
 		priceFilter = new AccordionRange("Cena", letoviInfoDto);
 		distanceFilter = new AccordionRange("Daljina", letoviInfoDto);
-		
-		left = new VBox(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter);
+
+		VBox applyBox = new VBox(applyFilter);
+		applyBox.setPadding(new Insets(0, 0, 0, 3));
+		VBox resetBox = new VBox(resetFilter);
+		resetBox.setPadding(new Insets(0, 3, 0, 0));
+		HBox filterOptions = new HBox(resetBox, applyBox);
+		filterOptions.setPadding(new Insets(0, 5, 0, 5));
+
+		left = new VBox(departureTpane, arrivalTpane, durationFilter, priceFilter, distanceFilter, filterOptions);
 	}
 	
 	private void createTableLetovi() {

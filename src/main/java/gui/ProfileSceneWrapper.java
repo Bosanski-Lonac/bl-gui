@@ -155,7 +155,7 @@ public class ProfileSceneWrapper extends SceneWrapper {
 			
 		});
 		
-		bottom = new HBox(btnDodaj, btnCancel);
+		bottom = new HBox(btnCancel, btnDodaj);
 		bottom.setPadding(new Insets(24, 0, 24, 0));
 		bottom.setAlignment(Pos.CENTER);
 		

@@ -88,7 +88,7 @@ public class CartSceneWrapper extends SceneWrapper {
 			}
 		});
 		
-		HBox bottom = new HBox(btnRezervisi, btnCancel);
+		HBox bottom = new HBox(btnCancel, btnRezervisi);
 		bottom.setAlignment(Pos.CENTER);
 		BorderPane cart = new BorderPane();
 		VBox opcije = new VBox(kolicina, cena, popust, pravaCena, bottom);
