@@ -7,6 +7,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class ExceptionHandler {
+
+	private ExceptionHandler() {
+
+	}
+	
 	public static void prikaziGresku(HttpClientErrorException e) {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Communication Error");
@@ -33,6 +38,7 @@ public class ExceptionHandler {
 				message = e.getMessage().substring(pos, end);
 			}
 		}
+		message = message.trim();
 		alert.setContentText(message);
 		alert.showAndWait();
 	}

@@ -1,9 +1,7 @@
 package app;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.TrayIcon.MessageType;
-import java.awt.event.ActionListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
