@@ -1,7 +1,6 @@
 package gui;
 
 import gui.komponente.exceptions.MissingInputException;
-import javafx.scene.control.Alert;
 import org.springframework.web.client.HttpClientErrorException;
 
 import gui.komponente.ExceptionHandler;

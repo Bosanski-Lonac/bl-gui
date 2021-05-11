@@ -19,14 +19,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -40,8 +38,6 @@ import model.FlightOperator;
 import model.TicketOperator;
 import model.UserOperator;
 import wrapper.LetPageWrapper;
-
-import java.util.Arrays;
 
 public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 	private KorisnikDto korisnikDto;
@@ -190,12 +186,12 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
 
 		departureFilter = new AutoCompleteTextField();
-		departureFilter.getElementi().addAll((letoviInfoDto.getDestinacije()));
+		departureFilter.setStavke(letoviInfoDto.getDestinacije());
 		VBox departureBox = new VBox(departureFilter);
 		TitledPane departureTpane = new TitledPane("Početna destinacija", departureBox);
 		
 		arrivalFilter = new AutoCompleteTextField();
-		arrivalFilter.getElementi().addAll((FlightOperator.getInstance().getLetoviInfo().getDestinacije()));
+		arrivalFilter.setStavke(letoviInfoDto.getDestinacije());
 		VBox arrivalBox = new VBox(arrivalFilter);
 		TitledPane arrivalTpane = new TitledPane("Krajnja destinacija", arrivalBox);
 
@@ -265,8 +261,6 @@ public class MainSceneWrapper extends SceneWrapper implements IRefreshable {
 
 		letCriteriaDto.setMinDaljina(distanceFilter.getLow());
 		letCriteriaDto.setMaxDaljina(distanceFilter.getHigh());
-
-		LetoviInfoDto letoviInfoDto = FlightOperator.getInstance().getLetoviInfo();
 
 		try {
 			letPageWrapper = FlightOperator.getInstance().getFlights(letCriteriaDto);

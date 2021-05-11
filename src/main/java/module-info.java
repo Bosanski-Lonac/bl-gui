@@ -3,6 +3,7 @@ module bl_gui {
 	exports gui.komponente;
 	exports controller;
 	exports gui;
+	exports gui.komponente.exceptions;
 	exports model;
 	exports wrapper;
 

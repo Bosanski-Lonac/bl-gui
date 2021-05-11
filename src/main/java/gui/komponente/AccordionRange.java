@@ -2,14 +2,8 @@ package gui.komponente;
 
 import dto.LetoviInfoDto;
 import javafx.geometry.Insets;
-import model.FlightOperator;
 import org.controlsfx.control.RangeSlider;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
-import javafx.scene.layout.VBox;
 
 public class AccordionRange extends TitledPane {
 	private RangeSlider range;
