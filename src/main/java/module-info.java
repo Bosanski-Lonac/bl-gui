@@ -9,6 +9,7 @@ module bl_gui {
 
 	requires transitive bl_core;
 	requires java.sql;
+	requires java.desktop;
 	requires transitive javafx.controls;
 		requires javafx.base;
 		requires javafx.graphics;
