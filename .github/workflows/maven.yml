@@ -23,7 +23,8 @@ jobs:
         distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-        - run: mkdir staging && cp target/*.jar staging
+    - name: Prepare Directory for Build
+      run: mkdir staging && cp target/*.jar staging
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.3
       with:
