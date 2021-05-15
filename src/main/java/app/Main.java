@@ -13,17 +13,15 @@ public class Main extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws IOException {
+		ServiceController serviceController = new ServiceController();
+		NotificationManager notificationManager = new NotificationManager(getHostServices());
+		MainView mainView = MainView.getInstance();
 		try {
-			ServiceController serviceController = new ServiceController();
-			NotificationManager notificationManager = new NotificationManager(getHostServices());
-			MainView mainView = MainView.getInstance();
-			mainView.setOnCloseRequest(event -> {
-				notificationManager.stop();
-				serviceController.stop();
-			});
+			mainView.configureInstance(notificationManager, serviceController);
 		} catch (IOException e) {
-			e.printStackTrace();
+			notificationManager.stop();
+			serviceController.stop();
 		}
 	}
 }
