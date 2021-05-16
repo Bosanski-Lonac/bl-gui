@@ -25,12 +25,15 @@ public class NotificationManager {
         trayIcon = new TrayIcon(image, "Bosanski Lonac");
         trayIcon.setImageAutoSize(true);
         trayIcon.addActionListener(event -> hostServices.showDocument(LINK_ANKETE));
+    }
+
+    public void start() {
         notificationTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 SwingUtilities.invokeLater(() -> displayQuestionnaire());
             }
-        }, 10000); // 300000 milliseconds = 5 minutes
+        }, 60000); // 300000 milliseconds = 5 minutes
         try {
             tray.add(trayIcon);
         } catch (AWTException e) {

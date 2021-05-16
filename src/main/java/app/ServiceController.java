@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 public class ServiceController {
     private ProcessBuilder[] processBuilders;
     private Process[] processes;
-    private Thread serviceStarter;
+    private Thread eurekaStarter;
 
     public ServiceController() {
         String direktorijumPutanja = System.getProperty ("user.dir");
@@ -29,25 +29,26 @@ public class ServiceController {
     }
 
     public void start(IProgressable progressable) {
-        String[] servers = new String[]{"EurekaServiceApplication", "KorisnickiServisRun", "GatewayServiceApplication",  "ServisZaLetoveRun", "ServisZaAvionskeKarteRun"};
         int len = processBuilders.length;
-        double increment = 1.0/len;
-        serviceStarter = new Thread(() -> {
+        double increment = 1.0 / (len * 2);
+        String[] servers = new String[]{"EurekaServiceApplication", "KorisnickiServisRun", "GatewayServiceApplication",  "ServisZaLetoveRun", "ServisZaAvionskeKarteRun"};
+        //String[] services = new String[] {"BL-KORISNICKI-SERVIS", "API-GATEWAY", "BL-SERVIS-ZA-LETOVE", "BL-SERVIS-ZA-AVIONSKE-KARTE"};
+        Thread serviceStarter = new Thread(() -> {
             try {
-                for(int i = 0; i < len; i++) {
+                for(int i = 1; i < len; i++) {
                     processes[i] = processBuilders[i].start();
                     BufferedReader outputReader = new BufferedReader(new InputStreamReader(processes[i].getInputStream()));
                     String line;
                     do {
                         line = outputReader.readLine();
-                        if (line != null) {
-                            System.out.println(line);
-                            if (line.toLowerCase().contains(("application failed to start"))) {
-                                Platform.runLater(progressable::fail);
-                                return;
-                            }
+                        if(line == null) {
+                            continue;
                         }
-                    } while(line == null || !line.contains("Started " + servers[i] + " in"));
+                        if(line.toLowerCase().contains("application failed to start")) {
+                            Platform.runLater(() -> progressable.finish(false));
+                            return;
+                        }
+                    } while(!line.contains("Started " + servers[i] + " in "));
                     outputReader.close();
                     Platform.runLater(() -> progressable.addProgress(increment));
                 }
@@ -55,12 +56,41 @@ public class ServiceController {
                 e.printStackTrace();
             }
         });
-        serviceStarter.start();
+        serviceStarter.setDaemon(true);
+        eurekaStarter = new Thread(() -> {
+            try {
+                processes[0] = processBuilders[0].start();
+                BufferedReader eurekaReader = new BufferedReader(new InputStreamReader(processes[0].getInputStream()));
+                int registeredServices = 0;
+                while(!Thread.interrupted() && registeredServices < 4) {
+                    String line = eurekaReader.readLine();
+                    if(line == null) {
+                        continue;
+                    } else if (line.toLowerCase().contains("application failed to start")) {
+                        Platform.runLater(() -> progressable.finish(false));
+                        return;
+                    } else if(line.contains("Started EurekaServiceApplication in ")) {
+                        serviceStarter.start();
+                        Platform.runLater(() -> progressable.addProgress(increment * 2));
+                    } else {
+                        if(line.contains("Registered instance ")) {
+                            registeredServices++;
+                            Platform.runLater(() -> progressable.addProgress(increment));
+                        }
+                    }
+                }
+                eurekaReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        eurekaStarter.setDaemon(true);
+        eurekaStarter.start();
     }
 
     public void stop() {
-        if (serviceStarter != null) {
-            serviceStarter.interrupt();
+        if(eurekaStarter != null) {
+            eurekaStarter.interrupt();
         }
         for (Process process : processes) {
             if (process != null) {
