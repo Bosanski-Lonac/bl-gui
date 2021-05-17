@@ -16,11 +16,9 @@ public class ExceptionHandler {
 		Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Communication Error");
 		alert.setHeaderText(e.getStatusCode().toString());
-		String message;
-		int pos = e.getMessage().indexOf("\"message\":");
-		if(pos == -1) {
-			message = e.getMessage();
-		} else {
+		String message = e.getMessage();
+		int pos = message.indexOf("\"message\":");
+		if(pos != -1) {
 			pos += 11;
 			if(e.getMessage().charAt(pos) == '"') {
 				pos = e.getMessage().indexOf("\"path\":");

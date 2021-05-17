@@ -1,6 +1,5 @@
 package gui;
 
-import app.App;
 import app.NotificationManager;
 import app.ServiceController;
 import javafx.stage.WindowEvent;
@@ -38,9 +37,9 @@ public class MainView extends Stage {
 		dialog.showAndWait();
 		if (!dialog.getResult()) {
 			this.fireEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSE_REQUEST));
-		}else{
-			notificationManager.start();
+			return;
 		}
+		notificationManager.start();
 	}
 
 	public static MainView getInstance() {

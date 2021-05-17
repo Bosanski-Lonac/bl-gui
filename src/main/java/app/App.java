@@ -16,9 +16,7 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-
 		instance = this;
-
 		ServiceController serviceController = new ServiceController();
 		NotificationManager notificationManager = new NotificationManager(getHostServices());
 		MainView mainView = MainView.getInstance();
@@ -31,7 +29,7 @@ public class App extends Application {
 	}
 
 	public static App getInstance(){
-		if(instance == null){
+		if(instance == null) {
 			instance = new App();
 		}
 		return instance;

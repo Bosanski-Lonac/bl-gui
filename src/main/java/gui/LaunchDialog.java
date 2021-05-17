@@ -13,12 +13,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
 
-import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
-    private static final double threshold = Math.pow(10, -12);
+    private static final double THRESHOLD = Math.pow(10, -12);
 
     private Label lbHint;
     private Text lbInfo;
@@ -74,7 +73,7 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
 
     public void setProgress(double progress) {
         indicator.setProgress(progress);
-        if (Math.abs(indicator.getProgress() - 1.0) < threshold) {
+        if (Math.abs(indicator.getProgress() - 1.0) < THRESHOLD) {
             finish(true);
         }
     }
