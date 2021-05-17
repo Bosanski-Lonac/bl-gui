@@ -1,5 +1,6 @@
 package gui;
 
+import app.App;
 import dto.LetoviInfoDto;
 import gui.komponente.AutoCompleteTextField;
 import org.springframework.web.client.HttpClientErrorException;

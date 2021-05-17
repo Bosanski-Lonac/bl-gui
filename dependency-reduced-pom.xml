@@ -29,7 +29,7 @@
             <option>--add-exports</option>
             <option>javafx.graphics/com.sun.javafx.scene.traversal=org.controlsfx.controls</option>
           </options>
-          <mainClass>app.Main</mainClass>
+          <mainClass>app.App</mainClass>
         </configuration>
       </plugin>
       <plugin>

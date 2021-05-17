@@ -1,5 +1,6 @@
 package gui;
 
+import app.App;
 import app.NotificationManager;
 import app.ServiceController;
 import javafx.stage.WindowEvent;
@@ -41,7 +42,7 @@ public class MainView extends Stage {
 			notificationManager.start();
 		}
 	}
-	
+
 	public static MainView getInstance() {
 		if(instance==null) {
 			instance=new MainView();
