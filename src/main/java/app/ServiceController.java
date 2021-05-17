@@ -39,16 +39,14 @@ public class ServiceController {
                     processes[i] = processBuilders[i].start();
                     BufferedReader outputReader = new BufferedReader(new InputStreamReader(processes[i].getInputStream()));
                     String line;
-                    do {
-                        line = outputReader.readLine();
-                        if(line == null) {
-                            continue;
-                        }
-                        if(line.toLowerCase().contains("application failed to start")) {
+                    while((line = outputReader.readLine()) == null ||
+                            !line.contains("Started " + servers[i] + " in ")) {
+                        if(line != null &&
+                                line.toLowerCase().contains("application failed to start")) {
                             Platform.runLater(() -> progressable.finish(false));
                             return;
                         }
-                    } while(!line.contains("Started " + servers[i] + " in "));
+                    }
                     outputReader.close();
                     Platform.runLater(() -> progressable.addProgress(increment));
                 }
@@ -64,16 +62,14 @@ public class ServiceController {
                 int registeredServices = 0;
                 while(!Thread.interrupted() && registeredServices < 4) {
                     String line = eurekaReader.readLine();
-                    if(line == null) {
-                        continue;
-                    } else if (line.toLowerCase().contains("application failed to start")) {
-                        Platform.runLater(() -> progressable.finish(false));
-                        return;
-                    } else if(line.contains("Started EurekaServiceApplication in ")) {
-                        serviceStarter.start();
-                        Platform.runLater(() -> progressable.addProgress(increment * 2));
-                    } else {
-                        if(line.contains("Registered instance ")) {
+                    if(line != null) {
+                        if (line.toLowerCase().contains("application failed to start")) {
+                            Platform.runLater(() -> progressable.finish(false));
+                            return;
+                        } else if(line.contains("Started EurekaServiceApplication in ")) {
+                            serviceStarter.start();
+                            Platform.runLater(() -> progressable.addProgress(increment * 2));
+                        } else if(line.contains("Registered instance ")) {
                             registeredServices++;
                             Platform.runLater(() -> progressable.addProgress(increment));
                         }

@@ -2,20 +2,25 @@ package gui;
 
 import gui.komponente.IProgressable;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
 
+import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
     private static final double threshold = Math.pow(10, -12);
 
-    private Label lblHint;
+    private Label lbHint;
+    private Label lbInfo;
     private ProgressIndicator indicator;
     private VBox vBox;
     private Timer timer;
@@ -25,10 +30,22 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
 
         BorderPane pozadina = new BorderPane();
 
-        lblHint = new Label("Servisi se učitavaju...");
+        lbHint = new Label("Ovaj proces moze potrajati par minuta!\rMolimo sacekajte!");
+        lbInfo = new Label("Koristite postojecu email adresu. Vasa email adresa se ne cuva!\r" +
+                "Ne koristite prave podatke za kreditnu karticu!");
         indicator = new ProgressIndicator();
         indicator.setProgress(0);
-        vBox = new VBox(10, lblHint, indicator);
+        indicator.setMinHeight(80);
+        indicator.setMinWidth(80);
+
+        lbHint.setStyle("-fx-font-size: 14");
+        lbInfo.setStyle("-fx-font-size: 14");
+        lbHint.setTextAlignment(TextAlignment.CENTER);
+        lbInfo.setTextAlignment(TextAlignment.CENTER);
+
+        vBox = new VBox(20, lbHint, indicator, lbInfo);
+        VBox.setVgrow(vBox, Priority.ALWAYS);
+        vBox.setAlignment(Pos.CENTER);
 
         timer = new Timer();
 
@@ -43,11 +60,11 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
 
         pozadina.setCenter(vBox);
         getDialogPane().setContent(pozadina);
-        getDialogPane().setPrefWidth(400);
-        getDialogPane().setPrefHeight(400);
+        getDialogPane().setPrefWidth(600);
+        getDialogPane().setPrefHeight(300);
         Window window = getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(event -> finish(false));
-        setTitle("Inicijalizacija...");
+        setTitle("Ucitavanje servisa");
     }
 
     public void addProgress(double progress) {

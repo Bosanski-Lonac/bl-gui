@@ -37,8 +37,9 @@ public class MainView extends Stage {
 		dialog.showAndWait();
 		if (!dialog.getResult()) {
 			this.fireEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSE_REQUEST));
+		}else{
+			notificationManager.start();
 		}
-		notificationManager.start();
 	}
 	
 	public static MainView getInstance() {

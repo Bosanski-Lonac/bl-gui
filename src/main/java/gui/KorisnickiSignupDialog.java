@@ -32,7 +32,7 @@ public class KorisnickiSignupDialog extends Dialog<Boolean> {
 		emailTf=new TextField();
 		passwordLbl=new Label("Password");
 		passwordTf=new PasswordField();
-		brojPasosaLbl=new Label("Broj pasosa");
+		brojPasosaLbl=new Label("Broj pasosa (9 brojeva)");
 		brojPasosaTf=new TextField();
 		imeLbl=new Label("Ime");
 		imeTf=new TextField();
