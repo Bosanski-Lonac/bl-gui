@@ -15,15 +15,20 @@ public class ServiceController {
 
     public ServiceController() {
         String direktorijumPutanja = System.getProperty ("user.dir");
+        direktorijumPutanja += File.separator + "servisi";
         File direktorijum = new File(direktorijumPutanja);
 
-        String[] paths = new String[]{"eureka.jar", "ks.jar", "gateway.jar", "szl.jar", "szak.jar"};
-        int len = paths.length;
+        String[] putanje = new String[]{"eureka.jar", "ks.jar", "gateway.jar", "szl.jar", "szak.jar"};
+        int len = putanje.length;
         processBuilders = new ProcessBuilder[len];
         processes = new Process[len];
 
+        String javaExec = System.getProperty("java.home");
+        javaExec += File.separator + "bin" + File.separator + "java.exe";
+
         for (int i = 0; i < len; i++) {
-            processBuilders[i] = new ProcessBuilder("java", "-jar", paths[i]);
+            String pravaPutanja = direktorijumPutanja + File.separator + putanje[i];
+            processBuilders[i] = new ProcessBuilder(javaExec, "-jar", pravaPutanja);
             processBuilders[i].directory(direktorijum);
         }
     }
@@ -63,6 +68,7 @@ public class ServiceController {
                 while(!Thread.interrupted() && registeredServices < 4) {
                     String line = eurekaReader.readLine();
                     if(line != null) {
+                        System.out.println(line);
                         if (line.toLowerCase().contains("application failed to start")) {
                             Platform.runLater(() -> progressable.finish(false));
                             return;

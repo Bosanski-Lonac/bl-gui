@@ -1,7 +1,6 @@
 package gui;
 
 import gui.komponente.IProgressable;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -13,9 +12,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Window;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
     private static final double THRESHOLD = Math.pow(10, -12);
 
@@ -23,7 +19,6 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
     private Text lbInfo;
     private ProgressIndicator indicator;
     private VBox vBox;
-    private Timer timer;
 
     public LaunchDialog() {
         super();
@@ -47,17 +42,6 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
         VBox.setVgrow(vBox, Priority.ALWAYS);
         vBox.setAlignment(Pos.CENTER);
 
-        timer = new Timer();
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> finish(false));
-            }
-        };
-
-        timer.schedule(task, 180000L);
-
         pozadina.setCenter(vBox);
         getDialogPane().setContent(pozadina);
         getDialogPane().setPrefWidth(800);
@@ -79,7 +63,6 @@ public class LaunchDialog extends Dialog<Boolean> implements IProgressable {
     }
 
     public void finish(boolean success) {
-        timer.cancel();
         this.setResult(success);
         this.close();
     }
