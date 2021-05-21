@@ -21,8 +21,7 @@ public class MainView extends Stage {
 		TicketOperator.getInstance().setRestTemplate(UserOperator.getInstance().getRestTemplate());
 		
 		setScene(new LoginSceneWrapper().getScena());
-		setWidth(1024);
-		setHeight(768);
+		setMaximized(true);
 		setTitle("Bosanski Lonac");
 		show();
 	}

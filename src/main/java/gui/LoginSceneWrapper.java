@@ -28,7 +28,7 @@ public class LoginSceneWrapper extends SceneWrapper {
 
 		int velicinaFonta = 14;
 
-		hlUputstvo = new Hyperlink("Linka ka uputstvu");
+		hlUputstvo = new Hyperlink("Link ka uputstvu");
 		hlUputstvo.setStyle("-fx-font-size: " + velicinaFonta  + ";");
 		hlUputstvo.setOnAction(event -> {
 			App.getInstance().getHostServices().showDocument("https://docs.google.com/document/d/1KW8VYR94WCSJW3alTcrtArk8G3CH43EQKvTyO7lC1fs/edit?usp=sharing");
