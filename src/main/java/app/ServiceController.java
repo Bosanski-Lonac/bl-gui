@@ -68,7 +68,6 @@ public class ServiceController {
                 while(!Thread.interrupted() && registeredServices < 4) {
                     String line = eurekaReader.readLine();
                     if(line != null) {
-                        System.out.println(line);
                         if (line.toLowerCase().contains("application failed to start")) {
                             Platform.runLater(() -> progressable.finish(false));
                             return;
